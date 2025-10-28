@@ -1,0 +1,234 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.grocery-bg {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cg fill-opacity='0.03'%3E%3Cpath d='M50 30c11.046 0 20 8.954 20 20s-8.954 20-20 20-20-8.954-20-20 8.954-20 20-20zm0 5c-8.284 0-15 6.716-15 15s6.716 15 15 15 15-6.716 15-15-6.716-15-15-15z' fill='%2310b981'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+:root {
+  --sidebar-width: 256px;
+}
+
+.main-content {
+  transition: margin-left 0.3s ease;
+}
+
+:root {
+  --background: hsl(120, 25%, 98%);
+  --foreground: hsl(0, 0%, 15%);
+  --muted: hsl(120, 15%, 95%);
+  --muted-foreground: hsl(0, 0%, 45%);
+  --popover: hsl(0, 0%, 100%);
+  --popover-foreground: hsl(0, 0%, 15%);
+  --card: hsl(0, 0%, 100%);
+  --card-foreground: hsl(0, 0%, 15%);
+  --border: hsl(120, 15%, 90%);
+  --input: hsl(120, 15%, 92%);
+  --primary: hsl(142, 76%, 45%);
+  --primary-foreground: hsl(0, 0%, 100%);
+  --secondary: hsl(120, 20%, 95%);
+  --secondary-foreground: hsl(0, 0%, 15%);
+  --accent: hsl(142, 50%, 96%);
+  --accent-foreground: hsl(142, 76%, 35%);
+  --destructive: hsl(0, 84.2%, 60.2%);
+  --destructive-foreground: hsl(0, 0%, 100%);
+  --ring: hsl(142, 76%, 45%);
+  --radius: 0.75rem;
+
+  /* Green theme colors */
+  --primary-green: hsl(142, 76%, 45%);
+  --primary-green-light: hsl(142, 76%, 60%);
+  --primary-green-dark: hsl(142, 76%, 35%);
+  --success-green: hsl(142, 76%, 45%);
+  --success-green-hover: hsl(142, 76%, 38%);
+  --warning-orange: hsl(32, 95%, 50%);
+  --warning-orange-hover: hsl(32, 95%, 40%);
+  --surface: hsl(0, 0%, 100%);
+  --background-green: hsl(120, 25%, 98%);
+  --text-primary: hsl(0, 0%, 15%);
+  --text-secondary: hsl(0, 0%, 40%);
+  --text-tertiary: hsl(0, 0%, 55%);
+  --border-light: hsl(120, 15%, 90%);
+  
+  /* Additional utility colors */
+  --info-blue: hsl(210, 100%, 50%);
+  --info-blue-light: hsl(210, 100%, 95%);
+  --success-light: hsl(142, 76%, 95%);
+  --warning-light: hsl(32, 95%, 95%);
+  --error-light: hsl(0, 84%, 95%);
+}
+
+.dark {
+  --background: hsl(240, 10%, 3.9%);
+  --foreground: hsl(0, 0%, 98%);
+  --muted: hsl(240, 3.7%, 15.9%);
+  --muted-foreground: hsl(240, 5%, 64.9%);
+  --popover: hsl(240, 10%, 3.9%);
+  --popover-foreground: hsl(0, 0%, 98%);
+  --card: hsl(240, 10%, 3.9%);
+  --card-foreground: hsl(0, 0%, 98%);
+  --border: hsl(240, 3.7%, 15.9%);
+  --input: hsl(240, 3.7%, 15.9%);
+  --primary: hsl(207, 90%, 54%);
+  --primary-foreground: hsl(211, 100%, 99%);
+  --secondary: hsl(240, 3.7%, 15.9%);
+  --secondary-foreground: hsl(0, 0%, 98%);
+  --accent: hsl(240, 3.7%, 15.9%);
+  --accent-foreground: hsl(0, 0%, 98%);
+  --destructive: hsl(0, 62.8%, 30.6%);
+  --destructive-foreground: hsl(0, 0%, 98%);
+  --ring: hsl(240, 4.9%, 83.9%);
+  --radius: 0.5rem;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+    font-family: 'Roboto', 'Inter', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-gray-800;
+  }
+
+  h1 { @apply text-3xl md:text-4xl; }
+  h2 { @apply text-2xl md:text-3xl; }
+  h3 { @apply text-xl md:text-2xl; }
+  h4 { @apply text-lg md:text-xl; }
+}
+
+@layer components {
+  .shadow-material {
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,0.2), 0 4px 5px 0 rgba(0,0,0,0.14), 0 1px 10px 0 rgba(0,0,0,0.12);
+  }
+  
+  .shadow-material-lg {
+    box-shadow: 0 8px 10px -5px rgba(0,0,0,0.2), 0 16px 24px 2px rgba(0,0,0,0.14), 0 6px 30px 5px rgba(0,0,0,0.12);
+  }
+
+  .shadow-soft {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  }
+
+  .shadow-hover {
+    transition: all 0.3s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  .shadow-hover:hover {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    z-index: 10;
+  }
+
+  .receipt-print {
+    font-family: 'Courier New', monospace;
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 1.4;
+  }
+
+  .btn-primary {
+    @apply text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-soft;
+    background-color: var(--primary-green);
+  }
+
+  .invoice_title {
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+
+  .btn-primary:hover {
+    background-color: var(--primary-green-dark);
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3), 0 2px 4px -1px rgba(16, 185, 129, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-success {
+    @apply text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-soft;
+    background-color: var(--success-green);
+  }
+
+  .btn-success:hover {
+    background-color: var(--success-green-hover);
+    box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3), 0 2px 4px -1px rgba(16, 185, 129, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .btn-warning {
+    @apply text-white font-medium py-3 px-6 rounded-lg transition-all duration-200 shadow-soft;
+    background-color: var(--warning-orange);
+  }
+
+  .btn-warning:hover {
+    background-color: var(--warning-orange-hover);
+    box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.3), 0 2px 4px -1px rgba(249, 115, 22, 0.2);
+    transform: translateY(-1px);
+  }
+
+  .pos-surface {
+    background-color: var(--surface);
+  }
+
+  .pos-text-primary {
+    color: var(--text-primary);
+  }
+
+  .pos-text-secondary {
+    color: var(--text-secondary);
+  }
+
+  .pos-text-tertiary {
+    color: var(--text-tertiary);
+  }
+
+  .pos-border {
+    border-color: var(--border-light);
+  }
+
+  .card-stat {
+    @apply bg-white rounded-xl p-6 shadow-soft border border-gray-100 transition-all duration-200;
+    position: relative;
+    z-index: 1;
+  }
+
+  .card-stat:hover {
+    @apply shadow-material border-green-200;
+    z-index: 10;
+  }
+
+  .stat-value {
+    @apply text-3xl font-bold text-gray-800 mb-1;
+  }
+
+  .stat-label {
+    @apply text-sm text-gray-600 font-medium;
+  }
+
+  .stat-icon {
+    @apply w-12 h-12 rounded-lg flex items-center justify-center mb-3;
+  }
+}
+
+@layer utilities {
+  .line-clamp-2 {
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+}
