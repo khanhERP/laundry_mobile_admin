@@ -705,10 +705,18 @@ export function DashboardOverview() {
                 size="sm"
                 onClick={() => {
                   const today = new Date();
-                  const weekStart = subDays(today, 7);
+                  const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+                  
+                  // Calculate days to last Monday
+                  const daysToLastMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
+                  const lastMonday = subDays(today, daysToLastMonday + 7);
+                  
+                  // Last Sunday is 6 days after last Monday
+                  const lastSunday = subDays(today, daysToLastMonday + 1);
+                  
                   setDateRange({
-                    start: format(weekStart, "yyyy-MM-dd"),
-                    end: format(today, "yyyy-MM-dd"),
+                    start: format(lastMonday, "yyyy-MM-dd"),
+                    end: format(lastSunday, "yyyy-MM-dd"),
                   });
                   setActiveFilter("lastWeek");
                   setShowDatePicker(false);
@@ -898,24 +906,27 @@ export function DashboardOverview() {
 
             {storeRevenueData && storeRevenueData.length > 0 ? (
               <div className="space-y-4">
-                {/* Text link to open dialog */}
-                <button
+                {/* Button to open dialog */}
+                <Button
                   onClick={() => setShowStoreSelection(true)}
-                  className="text-sm text-blue-600 hover:text-blue-800 underline"
+                  variant="outline"
+                  size="sm"
+                  className="w-full border-2 border-green-600 hover:bg-green-50"
                 >
-                  Chọn cửa hàng để xem biểu đồ
-                </button>
+                  <Store className="w-4 h-4 mr-2" />
+                  {t("reports.selectStoresToViewChart")}
+                </Button>
 
                 {/* Store Selection Dialog */}
                 <Dialog open={showStoreSelection} onOpenChange={setShowStoreSelection}>
                   <DialogContent className="max-w-lg">
                     <DialogHeader>
-                      <DialogTitle>Chọn cửa hàng</DialogTitle>
+                      <DialogTitle>{t("reports.selectStores")}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-3">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-semibold">
-                          {selectedStores.length} / {storeRevenueData.length} cửa hàng đã chọn
+                          {selectedStores.length} / {storeRevenueData.length} {t("reports.storesSelected")}
                         </span>
                         <div className="flex gap-2">
                           <Button
@@ -924,7 +935,7 @@ export function DashboardOverview() {
                             onClick={selectAllStores}
                             className="text-xs px-3 py-1"
                           >
-                            Chọn tất cả
+                            {t("reports.selectAll")}
                           </Button>
                           <Button
                             size="sm"
@@ -932,7 +943,7 @@ export function DashboardOverview() {
                             onClick={deselectAllStores}
                             className="text-xs px-3 py-1"
                           >
-                            Bỏ chọn
+                            {t("reports.deselectAll")}
                           </Button>
                         </div>
                       </div>
@@ -970,7 +981,7 @@ export function DashboardOverview() {
                         onClick={() => setShowStoreSelection(false)}
                         className="bg-green-600 hover:bg-green-700 text-white"
                       >
-                        Xác nhận
+                        {t("reports.confirm")}
                       </Button>
                     </div>
                   </DialogContent>
@@ -1135,7 +1146,7 @@ export function DashboardOverview() {
                   </>
                 ) : (
                   <div className="text-sm text-gray-500 text-center py-8">
-                    Vui lòng chọn ít nhất một cửa hàng để xem biểu đồ
+                    {t("reports.noStoresSelected")}
                   </div>
                 )}
               </div>

@@ -63,6 +63,13 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     totalRevenue: "Tổng thu từ bán hàng",
     revenueByStore: "Doanh thu theo cửa hàng",
     noStoreData: "Không có dữ liệu cửa hàng",
+    selectStoresToViewChart: "Chọn cửa hàng để xem biểu đồ",
+    selectStores: "Chọn cửa hàng",
+    storesSelected: "cửa hàng đã chọn",
+    selectAll: "Chọn tất cả",
+    deselectAll: "Bỏ chọn",
+    confirm: "Xác nhận",
+    noStoresSelected: "Vui lòng chọn ít nhất một cửa hàng để xem biểu đồ",
 
     // Payment methods
     paymentMethodBreakdown: "Phân tích phương thức thanh toán",
@@ -488,9 +495,12 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     topProductsChart: "인기 상품",
     revenueByStore: "매장별 매출",
     noStoreData: "매장 데이터 없음",
+    selectStoresToViewChart: "차트를 볼 매장 선택",
+    selectStores: "매장 선택",
     storesSelected: "선택된 매장",
     selectAll: "모두 선택",
     deselectAll: "모두 선택 해제",
+    confirm: "확인",
     noStoresSelected: "차트를 보려면 하나 이상의 매장을 선택하세요",
 
     // Payment methods
@@ -1055,6 +1065,13 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     topProductsChart: "Top Products",
     revenueByStore: "Revenue by Store",
     noStoreData: "No store data",
+    selectStoresToViewChart: "Select stores to view chart",
+    selectStores: "Select Stores",
+    storesSelected: "stores selected",
+    selectAll: "Select All",
+    deselectAll: "Deselect All",
+    confirm: "Confirm",
+    noStoresSelected: "Please select at least one store to view the chart",
 
     // Payment methods
     paymentMethodBreakdown: "Payment Method Breakdown",

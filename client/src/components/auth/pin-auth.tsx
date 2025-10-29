@@ -119,12 +119,7 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
         // Lưu trạng thái đăng nhập vào sessionStorage
         sessionStorage.setItem("pinAuthenticated", "true");
 
-        toast({
-          title: "Đăng nhập thành công",
-          description: "Chào mừng bạn đến với hệ thống POS",
-        });
-
-        console.log("✅ PIN verification successful");
+        console.log("🎉 PIN verification successful");
         onAuthSuccess();
       } else {
         toast({
