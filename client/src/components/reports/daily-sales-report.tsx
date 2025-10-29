@@ -124,7 +124,10 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
     );
 
     paidOrders.forEach((order) => {
-      const orderDate = new Date(order.orderedAt);
+      let orderDate = new Date(order.orderedAt);
+      if (storeSettings.storeCode.startsWith("CH-")) {
+        orderDate = new Date(order.updatedAt);
+      }
       const dateKey = format(orderDate, "yyyy-MM-dd");
 
       if (!groupedData[dateKey]) {
@@ -388,9 +391,10 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
     );
 
     // Filter orders by search term
-    const filteredOrders = selectedDateData?.orders.filter((order) =>
-      order.orderNumber.toLowerCase().includes(orderSearchTerm.toLowerCase())
-    ) || [];
+    const filteredOrders =
+      selectedDateData?.orders.filter((order) =>
+        order.orderNumber.toLowerCase().includes(orderSearchTerm.toLowerCase()),
+      ) || [];
 
     return (
       <div className="min-h-screen bg-green-50">
@@ -427,7 +431,9 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
           <div className="relative">
             <input
               type="text"
-              placeholder={t("reports.searchOrderNumber") || "Tìm kiếm theo mã đơn hàng..."}
+              placeholder={
+                t("reports.searchOrderNumber") || "Tìm kiếm theo mã đơn hàng..."
+              }
               value={orderSearchTerm}
               onChange={(e) => setOrderSearchTerm(e.target.value)}
               className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
@@ -462,7 +468,9 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
 
           {filteredOrders.length === 0 && (
             <div className="text-center py-8 text-gray-500">
-              {orderSearchTerm ? t("reports.noOrdersFound") || "Không tìm thấy đơn hàng" : t("reports.noOrders")}
+              {orderSearchTerm
+                ? t("reports.noOrdersFound") || "Không tìm thấy đơn hàng"
+                : t("reports.noOrders")}
             </div>
           )}
 
@@ -471,11 +479,15 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <span className="font-semibold">
-                  {t("reports.total")} ({filteredOrders.length}/{selectedDateData?.orders.length || 0})
+                  {t("reports.total")} ({filteredOrders.length}/
+                  {selectedDateData?.orders.length || 0})
                 </span>
                 <span className="font-semibold text-green-600">
                   {formatCurrency(
-                    filteredOrders.reduce((sum, order) => sum + parseFloat(order.total), 0)
+                    filteredOrders.reduce(
+                      (sum, order) => sum + parseFloat(order.total),
+                      0,
+                    ),
                   )}
                 </span>
               </div>
@@ -528,12 +540,14 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
             >
               {activeFilter === "today" && t("reports.toDay")}
               {activeFilter === "yesterday" && t("reports.yesterday")}
-              {activeFilter === "dayBeforeYesterday" && t("reports.dayBeforeYesterday")}
+              {activeFilter === "dayBeforeYesterday" &&
+                t("reports.dayBeforeYesterday")}
               {activeFilter === "lastWeek" && t("reports.lastWeek")}
               {activeFilter === "thisMonth" && t("reports.thisMonth")}
               {activeFilter === "lastMonth" && t("reports.lastMonth")}
               {activeFilter === "thisYear" && t("reports.thisYear")}
-              {activeFilter === "custom" && `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`}
+              {activeFilter === "custom" &&
+                `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`}
               <ChevronRight
                 className={`w-4 h-4 ml-1 transition-transform ${showDatePicker ? "rotate-90" : ""}`}
               />
@@ -648,14 +662,15 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
                 onClick={() => {
                   const today = new Date();
                   const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-                  
+
                   // Calculate days to last Monday
-                  const daysToLastMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
+                  const daysToLastMonday =
+                    currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
                   const lastMonday = subDays(today, daysToLastMonday + 7);
-                  
+
                   // Last Sunday is 6 days after last Monday
                   const lastSunday = subDays(today, daysToLastMonday + 1);
-                  
+
                   setDateRange({
                     start: format(lastMonday, "yyyy-MM-dd"),
                     end: format(lastSunday, "yyyy-MM-dd"),
@@ -695,8 +710,16 @@ export function DailySalesReport({ onBack }: DailySalesReportProps) {
                 size="sm"
                 onClick={() => {
                   const today = new Date();
-                  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+                  const lastMonth = new Date(
+                    today.getFullYear(),
+                    today.getMonth() - 1,
+                    1,
+                  );
+                  const lastMonthEnd = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    0,
+                  );
                   setDateRange({
                     start: format(lastMonth, "yyyy-MM-dd"),
                     end: format(lastMonthEnd, "yyyy-MM-dd"),
