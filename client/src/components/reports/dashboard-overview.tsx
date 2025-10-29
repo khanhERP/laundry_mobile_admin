@@ -88,6 +88,7 @@ export function DashboardOverview() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<string>("today");
 
   // Initialize with saved date range from localStorage or today's date
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>(() => {
@@ -608,35 +609,14 @@ export function DashboardOverview() {
               onClick={() => setShowDatePicker(!showDatePicker)}
             >
               {(() => {
-                const today = new Date();
-                const todayStr = format(today, "yyyy-MM-dd");
-                const isToday = dateRange.start === todayStr && dateRange.end === todayStr;
-
-                if (isToday) {
-                  return t("reports.today");
-                }
-
-                // Check if it's last week
-                const weekStart = subDays(today, 7);
-                const lastWeekStart = format(weekStart, "yyyy-MM-dd");
-                const lastWeekEnd = format(today, "yyyy-MM-dd");
-                const isLastWeek = dateRange.start === lastWeekStart && dateRange.end === lastWeekEnd;
-
-                if (isLastWeek) {
-                  return t("reports.lastWeekText");
-                }
-
-                // Check if it's this month
-                const monthStart = new Date(today.getFullYear(), today.getMonth(), 1);
-                const monthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 0);
-                const thisMonthStart = format(monthStart, "yyyy-MM-dd");
-                const thisMonthEnd = format(monthEnd, "yyyy-MM-dd");
-                const isThisMonth = dateRange.start === thisMonthStart && dateRange.end === thisMonthEnd;
-
-                if (isThisMonth) {
-                  return t("reports.thisMonthText");
-                }
-
+                if (activeFilter === "today") return t("reports.today");
+                if (activeFilter === "yesterday") return t("reports.yesterday");
+                if (activeFilter === "dayBeforeYesterday") return t("reports.dayBeforeYesterday");
+                if (activeFilter === "lastWeek") return t("reports.lastWeek");
+                if (activeFilter === "thisMonth") return t("reports.thisMonth");
+                if (activeFilter === "lastMonth") return t("reports.lastMonth");
+                if (activeFilter === "thisYear") return t("reports.thisYear");
+                
                 return `${format(new Date(dateRange.start), "dd/MM/yyyy", { locale: vi })} - ${format(new Date(dateRange.end), "dd/MM/yyyy", { locale: vi })}`;
               })()}
               <ChevronRight
@@ -657,9 +637,10 @@ export function DashboardOverview() {
                 <input
                   type="date"
                   value={dateRange.start}
-                  onChange={(e) =>
-                    setDateRange((prev) => ({ ...prev, start: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setDateRange((prev) => ({ ...prev, start: e.target.value }));
+                    setActiveFilter("custom");
+                  }}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-1"
                 />
               </div>
@@ -670,9 +651,10 @@ export function DashboardOverview() {
                 <input
                   type="date"
                   value={dateRange.end}
-                  onChange={(e) =>
-                    setDateRange((prev) => ({ ...prev, end: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setDateRange((prev) => ({ ...prev, end: e.target.value }));
+                    setActiveFilter("custom");
+                  }}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-1"
                 />
               </div>
@@ -684,6 +666,7 @@ export function DashboardOverview() {
                   const today = new Date();
                   const formattedToday = format(today, "yyyy-MM-dd");
                   setDateRange({ start: formattedToday, end: formattedToday });
+                  setActiveFilter("today");
                   setShowDatePicker(false);
                 }}
                 className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
@@ -694,11 +677,40 @@ export function DashboardOverview() {
                 size="sm"
                 onClick={() => {
                   const today = new Date();
+                  const yesterday = subDays(today, 1);
+                  const formattedYesterday = format(yesterday, "yyyy-MM-dd");
+                  setDateRange({ start: formattedYesterday, end: formattedYesterday });
+                  setActiveFilter("yesterday");
+                  setShowDatePicker(false);
+                }}
+                className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
+              >
+                {t("reports.yesterday")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const dayBeforeYesterday = subDays(today, 2);
+                  const formattedDay = format(dayBeforeYesterday, "yyyy-MM-dd");
+                  setDateRange({ start: formattedDay, end: formattedDay });
+                  setActiveFilter("dayBeforeYesterday");
+                  setShowDatePicker(false);
+                }}
+                className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
+              >
+                {t("reports.dayBeforeYesterday")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
                   const weekStart = subDays(today, 7);
                   setDateRange({
                     start: format(weekStart, "yyyy-MM-dd"),
                     end: format(today, "yyyy-MM-dd"),
                   });
+                  setActiveFilter("lastWeek");
                   setShowDatePicker(false);
                 }}
                 className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
@@ -723,11 +735,45 @@ export function DashboardOverview() {
                     start: format(start, "yyyy-MM-dd"),
                     end: format(end, "yyyy-MM-dd"),
                   });
+                  setActiveFilter("thisMonth");
                   setShowDatePicker(false);
                 }}
                 className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
               >
                 {t("reports.thisMonth")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+                  setDateRange({
+                    start: format(lastMonth, "yyyy-MM-dd"),
+                    end: format(lastMonthEnd, "yyyy-MM-dd"),
+                  });
+                  setActiveFilter("lastMonth");
+                  setShowDatePicker(false);
+                }}
+                className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
+              >
+                {t("reports.lastMonth")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const yearStart = new Date(today.getFullYear(), 0, 1);
+                  setDateRange({
+                    start: format(yearStart, "yyyy-MM-dd"),
+                    end: format(today, "yyyy-MM-dd"),
+                  });
+                  setActiveFilter("thisYear");
+                  setShowDatePicker(false);
+                }}
+                className="text-xs px-3 py-1 border border-green-600 text-green-600 bg-white hover:bg-green-50"
+              >
+                {t("reports.thisYear")}
               </Button>
             </div>
           </div>
@@ -821,8 +867,8 @@ export function DashboardOverview() {
       </div>
 
       {/* Tables and Orders Stats */}
-      <div className={`grid ${storeSettings?.businessType === "laundry" ? "grid-cols-1" : "grid-cols-2"} gap-3 px-4`}>
-        {storeSettings?.businessType !== "laundry" && (
+      {storeSettings?.businessType !== "laundry" && (
+        <div className="px-4">
           <Card className="border-0 shadow-md">
             <CardContent className="p-4">
               <div className="text-center space-y-2">
@@ -838,43 +884,8 @@ export function DashboardOverview() {
               </div>
             </CardContent>
           </Card>
-        )}
-
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="space-y-2">
-              <div className="text-sm text-gray-600">{t("reports.orders")}</div>
-              <div className="text-2xl font-bold text-green-600">
-                {dashboardStats.totalOrdersInRange}
-              </div>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span>{t("reports.completed")}</span>
-                  <span className="font-semibold">
-                    {dashboardStats.completedOrdersCount}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-gray-600 text-sm">
-                    {storeSettings?.businessType === "laundry"
-                      ? t("reports.unpaid")
-                      : t("reports.processing")}
-                  </span>
-                  <span className="font-semibold">
-                    {dashboardStats.processingOrdersCount}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>{t("reports.cancelled")}</span>
-                  <span className="font-semibold">
-                    {dashboardStats.cancelledOrdersCount}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        </div>
+      )}
 
       {/* Store Revenue Chart */}
       <div className="px-4">
@@ -1138,6 +1149,44 @@ export function DashboardOverview() {
       </div>
 
       {/* Orders Section */}
+      <div className="px-4">
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="space-y-2">
+              <div className="text-sm text-gray-600">{t("reports.orders")}</div>
+              <div className="text-2xl font-bold text-green-600">
+                {dashboardStats.totalOrdersInRange}
+              </div>
+              <div className="space-y-1 text-xs">
+                <div className="flex justify-between">
+                  <span>{t("reports.completed")}</span>
+                  <span className="font-semibold">
+                    {dashboardStats.completedOrdersCount}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600 text-sm">
+                    {storeSettings?.businessType === "laundry"
+                      ? t("reports.unpaid")
+                      : t("reports.processing")}
+                  </span>
+                  <span className="font-semibold">
+                    {dashboardStats.processingOrdersCount}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span>{t("reports.cancelled")}</span>
+                  <span className="font-semibold">
+                    {dashboardStats.cancelledOrdersCount}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Orders Detail Button Section */}
       <div className="px-4">
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">

@@ -275,38 +275,14 @@ export function MenuReport({
               className="text-sm text-gray-700 hover:bg-gray-300 px-2 py-1"
               onClick={() => setShowDatePicker(!showDatePicker)}
             >
-              {(() => {
-                const today = new Date();
-                const todayStr = format(today, "yyyy-MM-dd");
-                const isToday = dateRange.start === todayStr && dateRange.end === todayStr;
-                
-                if (isToday) {
-                  return t("reports.today");
-                }
-                
-                // Check if it's last week
-                const weekStart = subDays(today, 7);
-                const lastWeekStart = format(weekStart, "yyyy-MM-dd");
-                const lastWeekEnd = format(today, "yyyy-MM-dd");
-                const isLastWeek = dateRange.start === lastWeekStart && dateRange.end === lastWeekEnd;
-                
-                if (isLastWeek) {
-                  return t("reports.lastWeek");
-                }
-                
-                // Check if it's this month
-                const monthStart = startOfMonth(today);
-                const monthEnd = endOfMonth(today);
-                const thisMonthStart = format(monthStart, "yyyy-MM-dd");
-                const thisMonthEnd = format(monthEnd, "yyyy-MM-dd");
-                const isThisMonth = dateRange.start === thisMonthStart && dateRange.end === thisMonthEnd;
-                
-                if (isThisMonth) {
-                  return t("reports.thisMonth");
-                }
-                
-                return `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`;
-              })()}
+              {activeFilter === "today" && t("reports.today")}
+              {activeFilter === "yesterday" && t("reports.yesterday")}
+              {activeFilter === "dayBeforeYesterday" && t("reports.dayBeforeYesterday")}
+              {activeFilter === "lastWeek" && t("reports.lastWeek")}
+              {activeFilter === "thisMonth" && t("reports.thisMonth")}
+              {activeFilter === "lastMonth" && t("reports.lastMonth")}
+              {activeFilter === "thisYear" && t("reports.thisYear")}
+              {!["today", "yesterday", "dayBeforeYesterday", "lastWeek", "thisMonth", "lastMonth", "thisYear"].includes(activeFilter) && `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`}
               <ChevronRight
                 className={`w-4 h-4 ml-1 transition-transform ${showDatePicker ? "rotate-90" : ""}`}
               />
@@ -328,9 +304,10 @@ export function MenuReport({
                 <input
                   type="date"
                   value={dateRange.start}
-                  onChange={(e) =>
-                    setDateRange((prev) => ({ ...prev, start: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setDateRange((prev) => ({ ...prev, start: e.target.value }));
+                    setActiveFilter("custom");
+                  }}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-1"
                 />
               </div>
@@ -341,14 +318,15 @@ export function MenuReport({
                 <input
                   type="date"
                   value={dateRange.end}
-                  onChange={(e) =>
-                    setDateRange((prev) => ({ ...prev, end: e.target.value }))
-                  }
+                  onChange={(e) => {
+                    setDateRange((prev) => ({ ...prev, end: e.target.value }));
+                    setActiveFilter("custom");
+                  }}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-1"
                 />
               </div>
             </div>
-            <div className="flex gap-2 mt-3">
+            <div className="flex gap-2 mt-3 flex-wrap">
               <Button
                 size="sm"
                 onClick={() => {
@@ -356,6 +334,7 @@ export function MenuReport({
                   const formattedToday = format(today, "yyyy-MM-dd");
                   setDateRange({ start: formattedToday, end: formattedToday });
                   setActiveFilter("today");
+                  setShowDatePicker(false);
                 }}
                 className={`text-xs px-3 py-1 ${
                   activeFilter === "today"
@@ -369,12 +348,57 @@ export function MenuReport({
                 size="sm"
                 onClick={() => {
                   const today = new Date();
-                  const weekStart = subDays(today, 7);
+                  const yesterday = subDays(today, 1);
+                  const formattedYesterday = format(yesterday, "yyyy-MM-dd");
+                  setDateRange({ start: formattedYesterday, end: formattedYesterday });
+                  setActiveFilter("yesterday");
+                  setShowDatePicker(false);
+                }}
+                className={`text-xs px-3 py-1 ${
+                  activeFilter === "yesterday"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "border border-green-600 text-green-600 bg-white hover:bg-green-50"
+                }`}
+              >
+                {t("reports.yesterday")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const dayBeforeYesterday = subDays(today, 2);
+                  const formattedDay = format(dayBeforeYesterday, "yyyy-MM-dd");
+                  setDateRange({ start: formattedDay, end: formattedDay });
+                  setActiveFilter("dayBeforeYesterday");
+                  setShowDatePicker(false);
+                }}
+                className={`text-xs px-3 py-1 ${
+                  activeFilter === "dayBeforeYesterday"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "border border-green-600 text-green-600 bg-white hover:bg-green-50"
+                }`}
+              >
+                {t("reports.dayBeforeYesterday")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+                  
+                  // Calculate days to last Monday
+                  const daysToLastMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
+                  const lastMonday = subDays(today, daysToLastMonday + 7);
+                  
+                  // Last Sunday is 6 days after last Monday
+                  const lastSunday = subDays(today, daysToLastMonday + 1);
+                  
                   setDateRange({
-                    start: format(weekStart, "yyyy-MM-dd"),
-                    end: format(today, "yyyy-MM-dd"),
+                    start: format(lastMonday, "yyyy-MM-dd"),
+                    end: format(lastSunday, "yyyy-MM-dd"),
                   });
                   setActiveFilter("lastWeek");
+                  setShowDatePicker(false);
                 }}
                 className={`text-xs px-3 py-1 ${
                   activeFilter === "lastWeek"
@@ -395,6 +419,7 @@ export function MenuReport({
                     end: format(monthEnd, "yyyy-MM-dd"),
                   });
                   setActiveFilter("thisMonth");
+                  setShowDatePicker(false);
                 }}
                 className={`text-xs px-3 py-1 ${
                   activeFilter === "thisMonth"
@@ -403,6 +428,47 @@ export function MenuReport({
                 }`}
               >
                 {t("reports.thisMonth")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
+                  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+                  setDateRange({
+                    start: format(lastMonth, "yyyy-MM-dd"),
+                    end: format(lastMonthEnd, "yyyy-MM-dd"),
+                  });
+                  setActiveFilter("lastMonth");
+                  setShowDatePicker(false);
+                }}
+                className={`text-xs px-3 py-1 ${
+                  activeFilter === "lastMonth"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "border border-green-600 text-green-600 bg-white hover:bg-green-50"
+                }`}
+              >
+                {t("reports.lastMonth")}
+              </Button>
+              <Button
+                size="sm"
+                onClick={() => {
+                  const today = new Date();
+                  const yearStart = new Date(today.getFullYear(), 0, 1);
+                  setDateRange({
+                    start: format(yearStart, "yyyy-MM-dd"),
+                    end: format(today, "yyyy-MM-dd"),
+                  });
+                  setActiveFilter("thisYear");
+                  setShowDatePicker(false);
+                }}
+                className={`text-xs px-3 py-1 ${
+                  activeFilter === "thisYear"
+                    ? "bg-green-600 hover:bg-green-700 text-white"
+                    : "border border-green-600 text-green-600 bg-white hover:bg-green-50"
+                }`}
+              >
+                {t("reports.thisYear")}
               </Button>
             </div>
           </div>
@@ -499,7 +565,7 @@ export function MenuReport({
                           colSpan={4}
                           className="py-8 text-center text-gray-500"
                         >
-                          {t("reports.noData")}
+                          {t("reports.noDataAvailable")}
                         </td>
                       </tr>
                     )}
