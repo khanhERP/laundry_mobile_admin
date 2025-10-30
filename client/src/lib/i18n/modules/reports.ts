@@ -3,12 +3,18 @@ import { type ReportsTranslations } from "../types";
 export const reportsTranslations: { [key: string]: ReportsTranslations } = {
   vi: {
     title: "Báo cáo",
+    loading: "Đang tải",
+    reloading: "Đang tải lại",
+    menuAnalysisDescription: "Phân tích chi tiết về menu và sản phẩm",
+    details: "Chi tiết",
+    noRevenueData: "Chưa có doanh thu",
     description: "Xem báo cáo bán hàng và vận hành",
     dashboard: "Bảng điều khiển",
     dashboardDescription: "Tổng quan về doanh số và trạng thái hoạt động",
     salesAnalysis: "Phân tích bán hàng",
     menuAnalysis: "Phân tích menu",
     tableAnalysis: "Phân tích bàn",
+    noPaymentData: "Không có dữ liệu thanh toán",
     backToTables: "Quay lại Bàn",
 
     // Date and time filters
@@ -433,6 +439,12 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
 
   ko: {
     title: "보고서",
+    loading: "로딩 중",
+    reloading: "새로고침 중",
+    menuAnalysisDescription: "메뉴 및 상품 성과에 대한 상세 분석",
+    details: "자세히 보기",
+    noPaymentData: "결제 데이터 없음",
+    noRevenueData: "매출 데이터 없음",
     description: "판매 및 운영 보고서 보기",
     dashboard: "대시보드",
     dashboardDescription: "총 매출 및 운영 상태 대시보드",
@@ -1004,6 +1016,12 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
 
   en: {
     title: "Reports",
+    details: "Details",
+    loading: "Loading",
+    reloading: "Reloading",
+    menuAnalysisDescription:
+      "Detailed analysis of menu and product performance",
+    noPaymentData: "No payment data",
     description: "View sales and operational reports",
     dashboard: "Dashboard",
     dashboardDescription: "Dashboard of total sales and operational status",
@@ -1556,6 +1574,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     selectDateRange: "Select Date Range",
     applyFilter: "Apply Filter",
     clearFilter: "Clear Filter",
+    noRevenueData: "No revenue data",
     exportData: "Export Data",
     percentage: "Percentage",
     code: "Code",
