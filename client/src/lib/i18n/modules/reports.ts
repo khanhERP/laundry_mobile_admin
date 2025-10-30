@@ -3,6 +3,7 @@ import { type ReportsTranslations } from "../types";
 export const reportsTranslations: { [key: string]: ReportsTranslations } = {
   vi: {
     title: "Báo cáo",
+    takeaway: "Mang về",
     loading: "Đang tải",
     reloading: "Đang tải lại",
     menuAnalysisDescription: "Phân tích chi tiết về menu và sản phẩm",
@@ -440,6 +441,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
   ko: {
     title: "보고서",
     loading: "로딩 중",
+    takeaway: "포장",
     reloading: "새로고침 중",
     menuAnalysisDescription: "메뉴 및 상품 성과에 대한 상세 분석",
     details: "자세히 보기",
@@ -1017,6 +1019,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
   en: {
     title: "Reports",
     details: "Details",
+    takeaway: "Takeaway",
     loading: "Loading",
     reloading: "Reloading",
     menuAnalysisDescription:
