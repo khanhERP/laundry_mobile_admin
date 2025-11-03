@@ -31,7 +31,19 @@ import { format, subDays } from "date-fns";
 import { vi } from "date-fns/locale";
 import { useLocation } from "wouter";
 import type { StoreSettings } from "@shared/schema";
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import {
+  PieChart,
+  Pie,
+  Cell,
+  ResponsiveContainer,
+  Legend,
+  Tooltip,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+} from "recharts";
 
 interface OrderData {
   id: number;
@@ -91,31 +103,33 @@ export function DashboardOverview() {
   const [activeFilter, setActiveFilter] = useState<string>("today");
 
   // Initialize with saved date range from localStorage or today's date
-  const [dateRange, setDateRange] = useState<{ start: string; end: string }>(() => {
-    try {
-      const savedDateRange = localStorage.getItem('dashboard-date-range');
-      if (savedDateRange) {
-        const parsed = JSON.parse(savedDateRange);
-        // Validate the saved dates
-        if (parsed.start && parsed.end) {
-          return { start: parsed.start, end: parsed.end };
+  const [dateRange, setDateRange] = useState<{ start: string; end: string }>(
+    () => {
+      try {
+        const savedDateRange = localStorage.getItem("dashboard-date-range");
+        if (savedDateRange) {
+          const parsed = JSON.parse(savedDateRange);
+          // Validate the saved dates
+          if (parsed.start && parsed.end) {
+            return { start: parsed.start, end: parsed.end };
+          }
         }
+      } catch (error) {
+        console.error("Error loading saved date range:", error);
       }
-    } catch (error) {
-      console.error('Error loading saved date range:', error);
-    }
-    // Fallback to today's date
-    const today = new Date();
-    const formattedToday = format(today, "yyyy-MM-dd");
-    return { start: formattedToday, end: formattedToday };
-  });
+      // Fallback to today's date
+      const today = new Date();
+      const formattedToday = format(today, "yyyy-MM-dd");
+      return { start: formattedToday, end: formattedToday };
+    },
+  );
 
   // Save date range to localStorage whenever it changes
   useEffect(() => {
     try {
-      localStorage.setItem('dashboard-date-range', JSON.stringify(dateRange));
+      localStorage.setItem("dashboard-date-range", JSON.stringify(dateRange));
     } catch (error) {
-      console.error('Error saving date range:', error);
+      console.error("Error saving date range:", error);
     }
   }, [dateRange]);
 
@@ -215,7 +229,7 @@ export function DashboardOverview() {
     queryFn: async () => {
       try {
         const response = await fetch(
-          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/reports/revenue-by-store?startDate=${dateRange.start}&endDate=${dateRange.end}`
+          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/reports/revenue-by-store?startDate=${dateRange.start}&endDate=${dateRange.end}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -234,27 +248,33 @@ export function DashboardOverview() {
   // State for selected stores
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showStoreSelection, setShowStoreSelection] = useState(false);
-  const [chartType, setChartType] = useState<'pie' | 'bar'>('pie');
+  const [chartType, setChartType] = useState<"pie" | "bar">("pie");
 
   // Initialize selected stores when data loads
   useEffect(() => {
-    if (storeRevenueData && storeRevenueData.length > 0 && selectedStores.length === 0) {
+    if (
+      storeRevenueData &&
+      storeRevenueData.length > 0 &&
+      selectedStores.length === 0
+    ) {
       // Select all stores by default
-      setSelectedStores(storeRevenueData.map(store => store.storeCode));
+      setSelectedStores(storeRevenueData.map((store) => store.storeCode));
     }
   }, [storeRevenueData]);
 
   // Filter store revenue data based on selection
   const filteredStoreRevenueData = useMemo(() => {
     if (!storeRevenueData) return [];
-    return storeRevenueData.filter(store => selectedStores.includes(store.storeCode));
+    return storeRevenueData.filter((store) =>
+      selectedStores.includes(store.storeCode),
+    );
   }, [storeRevenueData, selectedStores]);
 
   // Toggle store selection
   const toggleStoreSelection = (storeCode: string) => {
-    setSelectedStores(prev => {
+    setSelectedStores((prev) => {
       if (prev.includes(storeCode)) {
-        return prev.filter(code => code !== storeCode);
+        return prev.filter((code) => code !== storeCode);
       } else {
         return [...prev, storeCode];
       }
@@ -264,7 +284,7 @@ export function DashboardOverview() {
   // Select all stores
   const selectAllStores = () => {
     if (storeRevenueData) {
-      setSelectedStores(storeRevenueData.map(store => store.storeCode));
+      setSelectedStores(storeRevenueData.map((store) => store.storeCode));
     }
   };
 
@@ -308,7 +328,11 @@ export function DashboardOverview() {
 
     // Filter unpaid orders from date range (only within selected date range)
     const unpaidOrders = dateRangeOrders.filter(
-      (order) => order.status === "pending" || order.status === "unpaid" || order.status === "served" || order.status === "preparing",
+      (order) =>
+        order.status === "pending" ||
+        order.status === "unpaid" ||
+        order.status === "served" ||
+        order.status === "preparing",
     );
 
     console.log(
@@ -584,7 +608,9 @@ export function DashboardOverview() {
 
   const handleOrderDetailsClick = () => {
     // Navigate to sales orders page with date range parameters
-    setLocation(`/sales-orders?startDate=${dateRange.start}&endDate=${dateRange.end}`);
+    setLocation(
+      `/sales-orders?startDate=${dateRange.start}&endDate=${dateRange.end}`,
+    );
   };
 
   if (ordersLoading || orderItemsLoading) {
@@ -611,12 +637,13 @@ export function DashboardOverview() {
               {(() => {
                 if (activeFilter === "today") return t("reports.today");
                 if (activeFilter === "yesterday") return t("reports.yesterday");
-                if (activeFilter === "dayBeforeYesterday") return t("reports.dayBeforeYesterday");
+                if (activeFilter === "dayBeforeYesterday")
+                  return t("reports.dayBeforeYesterday");
                 if (activeFilter === "lastWeek") return t("reports.lastWeek");
                 if (activeFilter === "thisMonth") return t("reports.thisMonth");
                 if (activeFilter === "lastMonth") return t("reports.lastMonth");
                 if (activeFilter === "thisYear") return t("reports.thisYear");
-                
+
                 return `${format(new Date(dateRange.start), "dd/MM/yyyy", { locale: vi })} - ${format(new Date(dateRange.end), "dd/MM/yyyy", { locale: vi })}`;
               })()}
               <ChevronRight
@@ -638,7 +665,10 @@ export function DashboardOverview() {
                   type="date"
                   value={dateRange.start}
                   onChange={(e) => {
-                    setDateRange((prev) => ({ ...prev, start: e.target.value }));
+                    setDateRange((prev) => ({
+                      ...prev,
+                      start: e.target.value,
+                    }));
                     setActiveFilter("custom");
                   }}
                   className="w-full text-sm border border-gray-300 rounded px-2 py-1"
@@ -679,7 +709,10 @@ export function DashboardOverview() {
                   const today = new Date();
                   const yesterday = subDays(today, 1);
                   const formattedYesterday = format(yesterday, "yyyy-MM-dd");
-                  setDateRange({ start: formattedYesterday, end: formattedYesterday });
+                  setDateRange({
+                    start: formattedYesterday,
+                    end: formattedYesterday,
+                  });
                   setActiveFilter("yesterday");
                   setShowDatePicker(false);
                 }}
@@ -706,14 +739,15 @@ export function DashboardOverview() {
                 onClick={() => {
                   const today = new Date();
                   const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
-                  
+
                   // Calculate days to last Monday
-                  const daysToLastMonday = currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
+                  const daysToLastMonday =
+                    currentDayOfWeek === 0 ? 6 : currentDayOfWeek - 1;
                   const lastMonday = subDays(today, daysToLastMonday + 7);
-                  
+
                   // Last Sunday is 6 days after last Monday
                   const lastSunday = subDays(today, daysToLastMonday + 1);
-                  
+
                   setDateRange({
                     start: format(lastMonday, "yyyy-MM-dd"),
                     end: format(lastSunday, "yyyy-MM-dd"),
@@ -754,8 +788,16 @@ export function DashboardOverview() {
                 size="sm"
                 onClick={() => {
                   const today = new Date();
-                  const lastMonth = new Date(today.getFullYear(), today.getMonth() - 1, 1);
-                  const lastMonthEnd = new Date(today.getFullYear(), today.getMonth(), 0);
+                  const lastMonth = new Date(
+                    today.getFullYear(),
+                    today.getMonth() - 1,
+                    1,
+                  );
+                  const lastMonthEnd = new Date(
+                    today.getFullYear(),
+                    today.getMonth(),
+                    0,
+                  );
                   setDateRange({
                     start: format(lastMonth, "yyyy-MM-dd"),
                     end: format(lastMonthEnd, "yyyy-MM-dd"),
@@ -918,7 +960,10 @@ export function DashboardOverview() {
                 </Button>
 
                 {/* Store Selection Dialog */}
-                <Dialog open={showStoreSelection} onOpenChange={setShowStoreSelection}>
+                <Dialog
+                  open={showStoreSelection}
+                  onOpenChange={setShowStoreSelection}
+                >
                   <DialogContent className="max-w-lg">
                     <DialogHeader>
                       <DialogTitle>{t("reports.selectStores")}</DialogTitle>
@@ -926,7 +971,8 @@ export function DashboardOverview() {
                     <div className="space-y-3">
                       <div className="flex justify-between items-center mb-2">
                         <span className="text-sm font-semibold">
-                          {selectedStores.length} / {storeRevenueData.length} {t("reports.storesSelected")}
+                          {selectedStores.length} / {storeRevenueData.length}{" "}
+                          {t("reports.storesSelected")}
                         </span>
                         <div className="flex gap-2">
                           <Button
@@ -956,18 +1002,26 @@ export function DashboardOverview() {
                                 ? "bg-green-50 border-2 border-green-200"
                                 : "bg-gray-50 border-2 border-transparent opacity-60"
                             }`}
-                            onClick={() => toggleStoreSelection(store.storeCode)}
+                            onClick={() =>
+                              toggleStoreSelection(store.storeCode)
+                            }
                           >
                             <input
                               type="checkbox"
                               checked={selectedStores.includes(store.storeCode)}
-                              onChange={() => toggleStoreSelection(store.storeCode)}
+                              onChange={() =>
+                                toggleStoreSelection(store.storeCode)
+                              }
                               className="w-4 h-4 text-green-600 rounded"
                               onClick={(e) => e.stopPropagation()}
                             />
                             <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium">{store.storeName}</div>
-                              <div className="text-xs text-gray-500">{store.storeCode}</div>
+                              <div className="text-sm font-medium">
+                                {store.storeName}
+                              </div>
+                              <div className="text-xs text-gray-500">
+                                {store.storeCode}
+                              </div>
                             </div>
                             <div className="text-sm font-semibold">
                               {formatCurrency(store.revenue)}
@@ -991,8 +1045,8 @@ export function DashboardOverview() {
                 <div className="flex gap-2 mb-4">
                   <Button
                     size="icon"
-                    variant={chartType === 'pie' ? 'default' : 'outline'}
-                    onClick={() => setChartType('pie')}
+                    variant={chartType === "pie" ? "default" : "outline"}
+                    onClick={() => setChartType("pie")}
                     className="h-9 w-9"
                     title="Biểu đồ tròn"
                   >
@@ -1000,8 +1054,8 @@ export function DashboardOverview() {
                   </Button>
                   <Button
                     size="icon"
-                    variant={chartType === 'bar' ? 'default' : 'outline'}
-                    onClick={() => setChartType('bar')}
+                    variant={chartType === "bar" ? "default" : "outline"}
+                    onClick={() => setChartType("bar")}
                     className="h-9 w-9"
                     title="Biểu đồ cột"
                   >
@@ -1012,7 +1066,7 @@ export function DashboardOverview() {
                 {/* Charts - Only show if there are selected stores */}
                 {filteredStoreRevenueData.length > 0 ? (
                   <>
-                    {chartType === 'pie' ? (
+                    {chartType === "pie" ? (
                       <div className="space-y-4">
                         <div className="h-64">
                           <ResponsiveContainer width="100%" height="100%">
@@ -1026,29 +1080,35 @@ export function DashboardOverview() {
                                 innerRadius={60}
                                 outerRadius={80}
                                 paddingAngle={2}
-                                label={({ percent }) => `${(percent * 100).toFixed(1)}%`}
+                                label={({ percent }) =>
+                                  `${(percent * 100).toFixed(1)}%`
+                                }
                               >
-                                {filteredStoreRevenueData.map((entry, index) => {
-                                  const colors = [
-                                    "#3b82f6",
-                                    "#ec4899",
-                                    "#10b981",
-                                    "#f59e0b",
-                                    "#ef4444",
-                                    "#8b5cf6",
-                                    "#06b6d4",
-                                    "#84cc16",
-                                  ];
-                                  return (
-                                    <Cell
-                                      key={`cell-${index}`}
-                                      fill={colors[index % colors.length]}
-                                    />
-                                  );
-                                })}
+                                {filteredStoreRevenueData.map(
+                                  (entry, index) => {
+                                    const colors = [
+                                      "#3b82f6",
+                                      "#ec4899",
+                                      "#10b981",
+                                      "#f59e0b",
+                                      "#ef4444",
+                                      "#8b5cf6",
+                                      "#06b6d4",
+                                      "#84cc16",
+                                    ];
+                                    return (
+                                      <Cell
+                                        key={`cell-${index}`}
+                                        fill={colors[index % colors.length]}
+                                      />
+                                    );
+                                  },
+                                )}
                               </Pie>
                               <Tooltip
-                                formatter={(value) => formatCurrency(Number(value))}
+                                formatter={(value) =>
+                                  formatCurrency(Number(value))
+                                }
                                 contentStyle={{
                                   backgroundColor: "rgba(255, 255, 255, 0.98)",
                                   border: "1px solid #e2e8f0",
@@ -1073,18 +1133,39 @@ export function DashboardOverview() {
                               "#06b6d4",
                               "#84cc16",
                             ];
-                            const totalRevenue = filteredStoreRevenueData.reduce((sum, s) => sum + s.revenue, 0);
-                            const percentage = totalRevenue > 0 ? ((store.revenue / totalRevenue) * 100).toFixed(1) : "0";
+                            const totalRevenue =
+                              filteredStoreRevenueData.reduce(
+                                (sum, s) => sum + s.revenue,
+                                0,
+                              );
+                            const percentage =
+                              totalRevenue > 0
+                                ? (
+                                    (store.revenue / totalRevenue) *
+                                    100
+                                  ).toFixed(1)
+                                : "0";
 
                             return (
-                              <div key={index} className="flex items-center gap-2">
+                              <div
+                                key={index}
+                                className="flex items-center gap-2"
+                              >
                                 <div
                                   className="w-3 h-3 rounded-full flex-shrink-0"
-                                  style={{ backgroundColor: colors[index % colors.length] }}
+                                  style={{
+                                    backgroundColor:
+                                      colors[index % colors.length],
+                                  }}
                                 />
                                 <div className="flex-1 min-w-0">
-                                  <div className="text-gray-700 truncate">{store.storeName}</div>
-                                  <div className="text-gray-500">{percentage}% • {formatCurrency(store.revenue)}</div>
+                                  <div className="text-gray-700 truncate">
+                                    {store.storeName}
+                                  </div>
+                                  <div className="text-gray-500">
+                                    {percentage}% •{" "}
+                                    {formatCurrency(store.revenue)}
+                                  </div>
                                 </div>
                               </div>
                             );
@@ -1096,7 +1177,12 @@ export function DashboardOverview() {
                         <ResponsiveContainer width="100%" height="100%">
                           <BarChart
                             data={filteredStoreRevenueData}
-                            margin={{ top: 20, right: 30, left: 20, bottom: 60 }}
+                            margin={{
+                              top: 20,
+                              right: 30,
+                              left: 20,
+                              bottom: 60,
+                            }}
                           >
                             <CartesianGrid strokeDasharray="3 3" />
                             <XAxis
@@ -1107,10 +1193,14 @@ export function DashboardOverview() {
                               tick={{ fontSize: 12 }}
                             />
                             <YAxis
-                              tickFormatter={(value) => `${(value / 1000000).toFixed(1)}M`}
+                              tickFormatter={(value) =>
+                                `${(value / 1000000).toFixed(1)}M`
+                              }
                             />
                             <Tooltip
-                              formatter={(value) => formatCurrency(Number(value))}
+                              formatter={(value) =>
+                                formatCurrency(Number(value))
+                              }
                               labelFormatter={(label) => label}
                               contentStyle={{
                                 backgroundColor: "rgba(255, 255, 255, 0.98)",
