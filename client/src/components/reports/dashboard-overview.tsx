@@ -635,14 +635,106 @@ export function DashboardOverview() {
               onClick={() => setShowDatePicker(!showDatePicker)}
             >
               {(() => {
-                if (activeFilter === "today") return t("reports.today");
-                if (activeFilter === "yesterday") return t("reports.yesterday");
-                if (activeFilter === "dayBeforeYesterday")
+                const today = new Date();
+                const todayStr = format(today, "yyyy-MM-dd");
+
+                // Check if it's today
+                const isToday =
+                  dateRange.start === todayStr && dateRange.end === todayStr;
+                if (isToday) {
+                  return t("reports.today");
+                }
+
+                // Check if it's yesterday
+                const yesterday = subDays(today, 1);
+                const yesterdayStr = format(yesterday, "yyyy-MM-dd");
+                const isYesterday =
+                  dateRange.start === yesterdayStr &&
+                  dateRange.end === yesterdayStr;
+                if (isYesterday) {
+                  return t("reports.yesterday");
+                }
+
+                // Check if it's day before yesterday
+                const dayBeforeYesterday = subDays(today, 2);
+                const dayBeforeYesterdayStr = format(
+                  dayBeforeYesterday,
+                  "yyyy-MM-dd",
+                );
+                const isDayBeforeYesterday =
+                  dateRange.start === dayBeforeYesterdayStr &&
+                  dateRange.end === dayBeforeYesterdayStr;
+                if (isDayBeforeYesterday) {
                   return t("reports.dayBeforeYesterday");
-                if (activeFilter === "lastWeek") return t("reports.lastWeek");
-                if (activeFilter === "thisMonth") return t("reports.thisMonth");
-                if (activeFilter === "lastMonth") return t("reports.lastMonth");
-                if (activeFilter === "thisYear") return t("reports.thisYear");
+                }
+
+                // Check if it's last week (last Monday to last Sunday)
+                const currentDayOfWeek = today.getDay(); // 0 = Sunday, 1 = Monday, etc.
+                const daysToLastMonday =
+                  currentDayOfWeek === 0 ? 6 : currentDayOfWeek + 6;
+                const lastMonday = subDays(today, daysToLastMonday);
+                const lastSunday = subDays(
+                  today,
+                  currentDayOfWeek === 0 ? 0 : currentDayOfWeek,
+                );
+                const lastWeekStart = format(lastMonday, "yyyy-MM-dd");
+                const lastWeekEnd = format(lastSunday, "yyyy-MM-dd");
+                const isLastWeek =
+                  dateRange.start === lastWeekStart &&
+                  dateRange.end === lastWeekEnd;
+                if (isLastWeek) {
+                  return t("reports.lastWeek");
+                }
+
+                // Check if it's this month
+                const monthStart = new Date(
+                  today.getFullYear(),
+                  today.getMonth(),
+                  1,
+                );
+                const monthEnd = new Date(
+                  today.getFullYear(),
+                  today.getMonth() + 1,
+                  0,
+                );
+                const thisMonthStart = format(monthStart, "yyyy-MM-dd");
+                const thisMonthEnd = format(monthEnd, "yyyy-MM-dd");
+                const isThisMonth =
+                  dateRange.start === thisMonthStart &&
+                  dateRange.end === thisMonthEnd;
+                if (isThisMonth) {
+                  return t("reports.thisMonth");
+                }
+
+                // Check if it's last month
+                const lastMonth = new Date(
+                  today.getFullYear(),
+                  today.getMonth() - 1,
+                  1,
+                );
+                const lastMonthEnd = new Date(
+                  today.getFullYear(),
+                  today.getMonth(),
+                  0,
+                );
+                const lastMonthStart = format(lastMonth, "yyyy-MM-dd");
+                const lastMonthEndStr = format(lastMonthEnd, "yyyy-MM-dd");
+                const isLastMonth =
+                  dateRange.start === lastMonthStart &&
+                  dateRange.end === lastMonthEndStr;
+                if (isLastMonth) {
+                  return t("reports.lastMonth");
+                }
+
+                // Check if it's this year (from January 1st to today)
+                const yearStart = new Date(today.getFullYear(), 0, 1);
+                const yearStartStr = format(yearStart, "yyyy-MM-dd");
+                const isThisYear =
+                  dateRange.start === yearStartStr &&
+                  dateRange.end === todayStr;
+                if (isThisYear) {
+                  return t("reports.thisYear");
+                }
 
                 return `${format(new Date(dateRange.start), "dd/MM/yyyy", { locale: vi })} - ${format(new Date(dateRange.end), "dd/MM/yyyy", { locale: vi })}`;
               })()}
