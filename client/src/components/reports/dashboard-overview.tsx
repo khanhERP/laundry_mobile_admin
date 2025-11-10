@@ -105,18 +105,6 @@ export function DashboardOverview() {
   // Initialize with saved date range from localStorage or today's date
   const [dateRange, setDateRange] = useState<{ start: string; end: string }>(
     () => {
-      try {
-        const savedDateRange = localStorage.getItem("dashboard-date-range");
-        if (savedDateRange) {
-          const parsed = JSON.parse(savedDateRange);
-          // Validate the saved dates
-          if (parsed.start && parsed.end) {
-            return { start: parsed.start, end: parsed.end };
-          }
-        }
-      } catch (error) {
-        console.error("Error loading saved date range:", error);
-      }
       // Fallback to today's date
       const today = new Date();
       const formattedToday = format(today, "yyyy-MM-dd");
@@ -245,7 +233,7 @@ export function DashboardOverview() {
     staleTime: 30000,
   });
 
-  // State for selected stores
+  // State for selected stores - move before dateRange to use in filtering
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showStoreSelection, setShowStoreSelection] = useState(false);
   const [chartType, setChartType] = useState<"pie" | "bar">("pie");
@@ -261,6 +249,11 @@ export function DashboardOverview() {
       setSelectedStores(storeRevenueData.map((store) => store.storeCode));
     }
   }, [storeRevenueData]);
+
+  // Get selected store codes for filtering
+  const selectedStoreCodes = useMemo(() => {
+    return selectedStores.length > 0 ? selectedStores : null;
+  }, [selectedStores]);
 
   // Filter store revenue data based on selection
   const filteredStoreRevenueData = useMemo(() => {
@@ -321,13 +314,23 @@ export function DashboardOverview() {
       return stats;
     }
 
+    // Filter orders by selected stores if any stores are selected
+    let filteredDateRangeOrders = dateRangeOrders;
+    if (selectedStoreCodes && selectedStoreCodes.length > 0) {
+      filteredDateRangeOrders = dateRangeOrders.filter((order) => {
+        // Get store code from order - you may need to adjust this based on your data structure
+        // Assuming orders have a storeCode field
+        return selectedStoreCodes.includes(order.storeCode || storeSettings?.storeCode || '');
+      });
+    }
+
     // Filter completed orders from date range
-    const completedOrders = dateRangeOrders.filter(
+    const completedOrders = filteredDateRangeOrders.filter(
       (order) => order.status === "completed" || order.status === "paid",
     );
 
     // Filter unpaid orders from date range (only within selected date range)
-    const unpaidOrders = dateRangeOrders.filter(
+    const unpaidOrders = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "unpaid" ||
@@ -338,7 +341,7 @@ export function DashboardOverview() {
     console.log(
       `Dashboard - Date Range: ${dateRange.start} to ${dateRange.end}`,
     );
-    console.log(`Dashboard - Total orders in range: ${dateRangeOrders.length}`);
+    console.log(`Dashboard - Total orders in range: ${filteredDateRangeOrders.length}`);
     console.log(`Dashboard - Completed orders: ${completedOrders.length}`);
     console.log(`Dashboard - Unpaid orders: ${unpaidOrders.length}`);
     console.log(
@@ -354,7 +357,7 @@ export function DashboardOverview() {
     );
 
     // Filter serving orders from date range only
-    const servingOrders = dateRangeOrders.filter(
+    const servingOrders = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "served" ||
         order.status === "preparing" ||
@@ -362,12 +365,12 @@ export function DashboardOverview() {
     );
 
     // Filter cancelled orders from date range
-    const cancelledOrders = dateRangeOrders.filter(
+    const cancelledOrders = filteredDateRangeOrders.filter(
       (order) => order.status === "cancelled",
     );
 
     // Count active orders from date range only
-    const activeOrdersCount = dateRangeOrders.filter(
+    const activeOrdersCount = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "preparing" ||
@@ -458,7 +461,7 @@ export function DashboardOverview() {
     });
 
     // Get unique customers from date range orders
-    const totalCustomers = dateRangeOrders.reduce((total, order) => {
+    const totalCustomers = filteredDateRangeOrders.reduce((total, order) => {
       return total + (order.customerCount || 1);
     }, 0);
 
@@ -572,14 +575,14 @@ export function DashboardOverview() {
     stats.processingOrdersCount = servingOrders.length;
     stats.cancelledOrdersCount = cancelledOrders.length;
     stats.unpaidOrdersCount = unpaidOrders.length; // Set unpaid orders count
-    stats.totalOrdersInRange = dateRangeOrders.length;
+    stats.totalOrdersInRange = filteredDateRangeOrders.length;
     stats.paymentMethods = paymentMethods;
     stats.topProducts = topProducts;
 
     console.log("Dashboard Debug - Final Stats:", stats);
 
     return stats;
-  }, [ordersData, dateRangeOrders, orderItemsData, dateRange]);
+  }, [ordersData, dateRangeOrders, orderItemsData, dateRange, selectedStoreCodes, storeSettings]);
 
   const formatCurrency = (amount: number | string) => {
     // Ensure amount is treated as a number, default to 0 if parsing fails
@@ -922,114 +925,7 @@ export function DashboardOverview() {
         )}
       </div>
 
-      {/* Revenue Cards */}
-      <div className="grid grid-cols-1 gap-3 px-4">
-        {/* Main Revenue Card */}
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-gray-600 text-sm">
-                    {t("reports.revenueLabel")}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(dashboardStats.totalSalesRevenue)}
-                  </p>
-                </div>
-                <div className="text-green-600 text-sm flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4" />
-                  {(() => {
-                    // Giả sử doanh thu hôm qua (có thể fetch từ API sau)
-                    const yesterdayRevenue =
-                      dashboardStats.totalSalesRevenue * 0.85; // Mock data
-                    const todayRevenue = dashboardStats.totalSalesRevenue;
-
-                    if (yesterdayRevenue === 0) return "+0%";
-
-                    const percentChange =
-                      ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) *
-                      100;
-                    const isPositive = percentChange >= 0;
-
-                    return `${isPositive ? "+" : ""}${percentChange.toFixed(1)}% ${isPositive ? "↑" : "↓"}`;
-                  })()}
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">
-                {t("reports.comparedToYesterday")}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Sub Revenue Cards */}
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.estimatedRevenue")}
-                </span>
-                <span className="font-semibold">
-                  {formatCurrency(dashboardStats.estimatedRevenue)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.paid")}
-                </span>
-                <span className="font-semibold">
-                  {formatCurrency(dashboardStats.totalSalesRevenue)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {storeSettings?.businessType === "laundry"
-                    ? t("reports.unpaid")
-                    : t("reports.processing")}
-                </span>
-                <span className="font-semibold">
-                  {storeSettings?.businessType === "laundry"
-                    ? formatCurrency(dashboardStats.servingRevenue)
-                    : dashboardStats.processingOrdersCount}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.cancelled")}
-                </span>
-                <span className="font-semibold text-red-600">
-                  {formatCurrency(dashboardStats.cancelledRevenue)}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Tables and Orders Stats */}
-      {storeSettings?.businessType !== "laundry" && (
-        <div className="px-4">
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4">
-              <div className="text-center space-y-2">
-                <div className="text-sm text-gray-600">
-                  {t("reports.tablesInUse")}
-                </div>
-                <div className="text-2xl font-bold text-green-600">
-                  {getOccupiedTablesCount()}/{getTotalTablesCount()}
-                </div>
-                <div className="w-12 h-8 bg-gray-200 rounded mx-auto flex items-center justify-center">
-                  <div className="w-8 h-6 bg-gray-400 rounded"></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* Store Revenue Chart */}
+      {/* Store Revenue Chart - Moved to top */}
       <div className="px-4">
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
@@ -1340,6 +1236,113 @@ export function DashboardOverview() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Revenue Cards */}
+      <div className="grid grid-cols-1 gap-3 px-4">
+        {/* Main Revenue Card */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-gray-600 text-sm">
+                    {t("reports.revenueLabel")}
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {formatCurrency(dashboardStats.totalSalesRevenue)}
+                  </p>
+                </div>
+                <div className="text-green-600 text-sm flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4" />
+                  {(() => {
+                    // Giả sử doanh thu hôm qua (có thể fetch từ API sau)
+                    const yesterdayRevenue =
+                      dashboardStats.totalSalesRevenue * 0.85; // Mock data
+                    const todayRevenue = dashboardStats.totalSalesRevenue;
+
+                    if (yesterdayRevenue === 0) return "+0%";
+
+                    const percentChange =
+                      ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) *
+                      100;
+                    const isPositive = percentChange >= 0;
+
+                    return `${isPositive ? "+" : ""}${percentChange.toFixed(1)}% ${isPositive ? "↑" : "↓"}`;
+                  })()}
+                </div>
+              </div>
+              <div className="text-xs text-gray-500">
+                {t("reports.comparedToYesterday")}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sub Revenue Cards */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.estimatedRevenue")}
+                </span>
+                <span className="font-semibold">
+                  {formatCurrency(dashboardStats.estimatedRevenue)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.paid")}
+                </span>
+                <span className="font-semibold">
+                  {formatCurrency(dashboardStats.totalSalesRevenue)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {storeSettings?.businessType === "laundry"
+                    ? t("reports.unpaid")
+                    : t("reports.processing")}
+                </span>
+                <span className="font-semibold">
+                  {storeSettings?.businessType === "laundry"
+                    ? formatCurrency(dashboardStats.servingRevenue)
+                    : dashboardStats.processingOrdersCount}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.cancelled")}
+                </span>
+                <span className="font-semibold text-red-600">
+                  {formatCurrency(dashboardStats.cancelledRevenue)}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tables and Orders Stats */}
+      {storeSettings?.businessType !== "laundry" && (
+        <div className="px-4">
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-4">
+              <div className="text-center space-y-2">
+                <div className="text-sm text-gray-600">
+                  {t("reports.tablesInUse")}
+                </div>
+                <div className="text-2xl font-bold text-green-600">
+                  {getOccupiedTablesCount()}/{getTotalTablesCount()}
+                </div>
+                <div className="w-12 h-8 bg-gray-200 rounded mx-auto flex items-center justify-center">
+                  <div className="w-8 h-6 bg-gray-400 rounded"></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Orders Section */}
       <div className="px-4">
