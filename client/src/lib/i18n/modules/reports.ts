@@ -69,6 +69,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     topProductsChart: "Sản phẩm bán chạy",
     totalRevenue: "Tổng thu từ bán hàng",
     revenueByStore: "Doanh thu theo cửa hàng",
+    salesAnalysisReport: "Phân tích doanh số",
     noStoreData: "Không có dữ liệu cửa hàng",
     selectStoresToViewChart: "Chọn cửa hàng để xem biểu đồ",
     selectStores: "Chọn cửa hàng",
@@ -415,6 +416,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     searchOrderNumber: "Tìm kiếm theo mã đơn hàng...",
     noOrdersFound: "Không tìm thấy đơn hàng",
     noOrders: "Không có đơn hàng",
+    all: "Tất cả",
 
     // Chart and filter labels
     selectDateRange: "Chọn khoảng thời gian",
@@ -508,6 +510,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     hourlyBreakdownChart: "시간별 분석",
     topProductsChart: "인기 상품",
     revenueByStore: "매장별 매출",
+    salesAnalysisReport: "매출 분석",
     noStoreData: "매장 데이터 없음",
     selectStoresToViewChart: "차트를 볼 매장 선택",
     selectStores: "매장 선택",
@@ -1085,6 +1088,7 @@ export const reportsTranslations: { [key: string]: ReportsTranslations } = {
     hourlyBreakdownChart: "Hourly Breakdown",
     topProductsChart: "Top Products",
     revenueByStore: "Revenue by Store",
+    salesAnalysisReport: "Sales Analysis",
     noStoreData: "No store data",
     selectStoresToViewChart: "Select stores to view chart",
     selectStores: "Select Stores",

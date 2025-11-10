@@ -233,27 +233,20 @@ export function DashboardOverview() {
     staleTime: 30000,
   });
 
-  // State for selected stores - move before dateRange to use in filtering
+  // State for selected stores
   const [selectedStores, setSelectedStores] = useState<string[]>([]);
   const [showStoreSelection, setShowStoreSelection] = useState(false);
   const [chartType, setChartType] = useState<"pie" | "bar">("pie");
 
-  // Initialize selected stores when data loads
+  // Initialize selected stores when data loads - select all by default
   useEffect(() => {
-    if (
-      storeRevenueData &&
-      storeRevenueData.length > 0 &&
-      selectedStores.length === 0
-    ) {
-      // Select all stores by default
-      setSelectedStores(storeRevenueData.map((store) => store.storeCode));
+    if (storeRevenueData && storeRevenueData.length > 0) {
+      // Always sync with all stores if none are selected
+      if (selectedStores.length === 0) {
+        setSelectedStores(storeRevenueData.map((store) => store.storeCode));
+      }
     }
   }, [storeRevenueData]);
-
-  // Get selected store codes for filtering
-  const selectedStoreCodes = useMemo(() => {
-    return selectedStores.length > 0 ? selectedStores : null;
-  }, [selectedStores]);
 
   // Filter store revenue data based on selection
   const filteredStoreRevenueData = useMemo(() => {
@@ -314,23 +307,13 @@ export function DashboardOverview() {
       return stats;
     }
 
-    // Filter orders by selected stores if any stores are selected
-    let filteredDateRangeOrders = dateRangeOrders;
-    if (selectedStoreCodes && selectedStoreCodes.length > 0) {
-      filteredDateRangeOrders = dateRangeOrders.filter((order) => {
-        // Get store code from order - you may need to adjust this based on your data structure
-        // Assuming orders have a storeCode field
-        return selectedStoreCodes.includes(order.storeCode || storeSettings?.storeCode || '');
-      });
-    }
-
     // Filter completed orders from date range
-    const completedOrders = filteredDateRangeOrders.filter(
+    const completedOrders = dateRangeOrders.filter(
       (order) => order.status === "completed" || order.status === "paid",
     );
 
     // Filter unpaid orders from date range (only within selected date range)
-    const unpaidOrders = filteredDateRangeOrders.filter(
+    const unpaidOrders = dateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "unpaid" ||
@@ -341,7 +324,7 @@ export function DashboardOverview() {
     console.log(
       `Dashboard - Date Range: ${dateRange.start} to ${dateRange.end}`,
     );
-    console.log(`Dashboard - Total orders in range: ${filteredDateRangeOrders.length}`);
+    console.log(`Dashboard - Total orders in range: ${dateRangeOrders.length}`);
     console.log(`Dashboard - Completed orders: ${completedOrders.length}`);
     console.log(`Dashboard - Unpaid orders: ${unpaidOrders.length}`);
     console.log(
@@ -357,7 +340,7 @@ export function DashboardOverview() {
     );
 
     // Filter serving orders from date range only
-    const servingOrders = filteredDateRangeOrders.filter(
+    const servingOrders = dateRangeOrders.filter(
       (order) =>
         order.status === "served" ||
         order.status === "preparing" ||
@@ -365,12 +348,12 @@ export function DashboardOverview() {
     );
 
     // Filter cancelled orders from date range
-    const cancelledOrders = filteredDateRangeOrders.filter(
+    const cancelledOrders = dateRangeOrders.filter(
       (order) => order.status === "cancelled",
     );
 
     // Count active orders from date range only
-    const activeOrdersCount = filteredDateRangeOrders.filter(
+    const activeOrdersCount = dateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "preparing" ||
@@ -461,7 +444,7 @@ export function DashboardOverview() {
     });
 
     // Get unique customers from date range orders
-    const totalCustomers = filteredDateRangeOrders.reduce((total, order) => {
+    const totalCustomers = dateRangeOrders.reduce((total, order) => {
       return total + (order.customerCount || 1);
     }, 0);
 
@@ -575,14 +558,14 @@ export function DashboardOverview() {
     stats.processingOrdersCount = servingOrders.length;
     stats.cancelledOrdersCount = cancelledOrders.length;
     stats.unpaidOrdersCount = unpaidOrders.length; // Set unpaid orders count
-    stats.totalOrdersInRange = filteredDateRangeOrders.length;
+    stats.totalOrdersInRange = dateRangeOrders.length;
     stats.paymentMethods = paymentMethods;
     stats.topProducts = topProducts;
 
     console.log("Dashboard Debug - Final Stats:", stats);
 
     return stats;
-  }, [ordersData, dateRangeOrders, orderItemsData, dateRange, selectedStoreCodes, storeSettings]);
+  }, [ordersData, dateRangeOrders, orderItemsData, dateRange]);
 
   const formatCurrency = (amount: number | string) => {
     // Ensure amount is treated as a number, default to 0 if parsing fails
@@ -925,109 +908,234 @@ export function DashboardOverview() {
         )}
       </div>
 
-      {/* Store Revenue Chart - Moved to top */}
+      {/* Store Selector */}
+      <div className="px-4">
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Store className="w-5 h-5 text-gray-600" />
+                <span className="font-semibold">{t("reports.selectStores")}</span>
+              </div>
+              <Badge variant="outline">
+                {selectedStores.length > 0 ? selectedStores.length : t("common.all")}
+              </Badge>
+            </div>
+            <Button
+              onClick={() => setShowStoreSelection(true)}
+              variant="outline"
+              size="sm"
+              className="w-full border-2 border-green-600 hover:bg-green-50"
+            >
+              <Store className="w-4 h-4 mr-2" />
+              {selectedStores.length > 0 
+                ? `${selectedStores.length} ${t("reports.storesSelected")}`
+                : t("common.all")}
+            </Button>
+          </CardContent>
+        </Card>
+
+        {/* Store Selection Dialog */}
+        <Dialog
+          open={showStoreSelection}
+          onOpenChange={setShowStoreSelection}
+        >
+          <DialogContent className="max-w-lg">
+            <DialogHeader>
+              <DialogTitle>{t("reports.selectStores")}</DialogTitle>
+            </DialogHeader>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center mb-2">
+                <span className="text-sm font-semibold">
+                  {selectedStores.length} / {storeRevenueData?.length || 0}{" "}
+                  {t("reports.storesSelected")}
+                </span>
+                <div className="flex gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={selectAllStores}
+                    className="text-xs px-3 py-1"
+                  >
+                    {t("reports.selectAll")}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={deselectAllStores}
+                    className="text-xs px-3 py-1"
+                  >
+                    {t("reports.deselectAll")}
+                  </Button>
+                </div>
+              </div>
+              <div className="space-y-2 max-h-96 overflow-y-auto">
+                {storeRevenueData?.map((store: any, index: number) => (
+                  <div
+                    key={index}
+                    className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-all ${
+                      selectedStores.includes(store.storeCode)
+                        ? "bg-green-50 border-2 border-green-200"
+                        : "bg-gray-50 border-2 border-transparent opacity-60"
+                    }`}
+                    onClick={() =>
+                      toggleStoreSelection(store.storeCode)
+                    }
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedStores.includes(store.storeCode)}
+                      onChange={() =>
+                        toggleStoreSelection(store.storeCode)
+                      }
+                      className="w-4 h-4 text-green-600 rounded"
+                      onClick={(e) => e.stopPropagation()}
+                    />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium">
+                        {store.storeName}
+                      </div>
+                      <div className="text-xs text-gray-500">
+                        {store.storeCode}
+                      </div>
+                    </div>
+                    <div className="text-sm font-semibold">
+                      {formatCurrency(store.revenue)}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex justify-end pt-3 border-t">
+              <Button
+                onClick={() => setShowStoreSelection(false)}
+                className="bg-green-600 hover:bg-green-700 text-white"
+              >
+                {t("reports.confirm")}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
+
+      {/* Revenue Cards */}
+      <div className="grid grid-cols-1 gap-3 px-4">
+        {/* Main Revenue Card */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="text-gray-600 text-sm">
+                    {t("reports.revenueLabel")}
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {formatCurrency(dashboardStats.totalSalesRevenue)}
+                  </p>
+                </div>
+                <div className="text-green-600 text-sm flex items-center gap-1">
+                  <TrendingUp className="w-4 h-4" />
+                  {(() => {
+                    // Giả sử doanh thu hôm qua (có thể fetch từ API sau)
+                    const yesterdayRevenue =
+                      dashboardStats.totalSalesRevenue * 0.85; // Mock data
+                    const todayRevenue = dashboardStats.totalSalesRevenue;
+
+                    if (yesterdayRevenue === 0) return "+0%";
+
+                    const percentChange =
+                      ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) *
+                      100;
+                    const isPositive = percentChange >= 0;
+
+                    return `${isPositive ? "+" : ""}${percentChange.toFixed(1)}% ${isPositive ? "↑" : "↓"}`;
+                  })()}
+                </div>
+              </div>
+              <div className="text-xs text-gray-500">
+                {t("reports.comparedToYesterday")}
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sub Revenue Cards */}
+        <Card className="border-0 shadow-md">
+          <CardContent className="p-4">
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.estimatedRevenue")}
+                </span>
+                <span className="font-semibold">
+                  {formatCurrency(dashboardStats.estimatedRevenue)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.paid")}
+                </span>
+                <span className="font-semibold">
+                  {formatCurrency(dashboardStats.totalSalesRevenue)}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {storeSettings?.businessType === "laundry"
+                    ? t("reports.unpaid")
+                    : t("reports.processing")}
+                </span>
+                <span className="font-semibold">
+                  {storeSettings?.businessType === "laundry"
+                    ? formatCurrency(dashboardStats.servingRevenue)
+                    : dashboardStats.processingOrdersCount}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-gray-600 text-sm">
+                  {t("reports.cancelled")}
+                </span>
+                <span className="font-semibold text-red-600">
+                  {formatCurrency(dashboardStats.cancelledRevenue)}
+                </span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Tables and Orders Stats */}
+      {storeSettings?.businessType !== "laundry" && (
+        <div className="px-4">
+          <Card className="border-0 shadow-md">
+            <CardContent className="p-4">
+              <div className="text-center space-y-2">
+                <div className="text-sm text-gray-600">
+                  {t("reports.tablesInUse")}
+                </div>
+                <div className="text-2xl font-bold text-green-600">
+                  {getOccupiedTablesCount()}/{getTotalTablesCount()}
+                </div>
+                <div className="w-12 h-8 bg-gray-200 rounded mx-auto flex items-center justify-center">
+                  <div className="w-8 h-6 bg-gray-400 rounded"></div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Store Revenue Chart */}
       <div className="px-4">
         <Card className="border-0 shadow-md">
           <CardContent className="p-4">
             <h3 className="font-semibold mb-4 flex items-center gap-2">
               <Store className="w-5 h-5" />
-              {t("reports.revenueByStore")}
+              {t("reports.salesAnalysisReport")}
             </h3>
 
             {storeRevenueData && storeRevenueData.length > 0 ? (
               <div className="space-y-4">
-                {/* Button to open dialog */}
-                <Button
-                  onClick={() => setShowStoreSelection(true)}
-                  variant="outline"
-                  size="sm"
-                  className="w-full border-2 border-green-600 hover:bg-green-50"
-                >
-                  <Store className="w-4 h-4 mr-2" />
-                  {t("reports.selectStoresToViewChart")}
-                </Button>
-
-                {/* Store Selection Dialog */}
-                <Dialog
-                  open={showStoreSelection}
-                  onOpenChange={setShowStoreSelection}
-                >
-                  <DialogContent className="max-w-lg">
-                    <DialogHeader>
-                      <DialogTitle>{t("reports.selectStores")}</DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center mb-2">
-                        <span className="text-sm font-semibold">
-                          {selectedStores.length} / {storeRevenueData.length}{" "}
-                          {t("reports.storesSelected")}
-                        </span>
-                        <div className="flex gap-2">
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={selectAllStores}
-                            className="text-xs px-3 py-1"
-                          >
-                            {t("reports.selectAll")}
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={deselectAllStores}
-                            className="text-xs px-3 py-1"
-                          >
-                            {t("reports.deselectAll")}
-                          </Button>
-                        </div>
-                      </div>
-                      <div className="space-y-2 max-h-96 overflow-y-auto">
-                        {storeRevenueData.map((store, index) => (
-                          <div
-                            key={index}
-                            className={`flex items-center gap-3 p-2 rounded cursor-pointer transition-all ${
-                              selectedStores.includes(store.storeCode)
-                                ? "bg-green-50 border-2 border-green-200"
-                                : "bg-gray-50 border-2 border-transparent opacity-60"
-                            }`}
-                            onClick={() =>
-                              toggleStoreSelection(store.storeCode)
-                            }
-                          >
-                            <input
-                              type="checkbox"
-                              checked={selectedStores.includes(store.storeCode)}
-                              onChange={() =>
-                                toggleStoreSelection(store.storeCode)
-                              }
-                              className="w-4 h-4 text-green-600 rounded"
-                              onClick={(e) => e.stopPropagation()}
-                            />
-                            <div className="flex-1 min-w-0">
-                              <div className="text-sm font-medium">
-                                {store.storeName}
-                              </div>
-                              <div className="text-xs text-gray-500">
-                                {store.storeCode}
-                              </div>
-                            </div>
-                            <div className="text-sm font-semibold">
-                              {formatCurrency(store.revenue)}
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    <div className="flex justify-end pt-3 border-t">
-                      <Button
-                        onClick={() => setShowStoreSelection(false)}
-                        className="bg-green-600 hover:bg-green-700 text-white"
-                      >
-                        {t("reports.confirm")}
-                      </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
 
                 {/* Chart Type Selector */}
                 <div className="flex gap-2 mb-4">
@@ -1236,113 +1344,6 @@ export function DashboardOverview() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Revenue Cards */}
-      <div className="grid grid-cols-1 gap-3 px-4">
-        {/* Main Revenue Card */}
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <p className="text-gray-600 text-sm">
-                    {t("reports.revenueLabel")}
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {formatCurrency(dashboardStats.totalSalesRevenue)}
-                  </p>
-                </div>
-                <div className="text-green-600 text-sm flex items-center gap-1">
-                  <TrendingUp className="w-4 h-4" />
-                  {(() => {
-                    // Giả sử doanh thu hôm qua (có thể fetch từ API sau)
-                    const yesterdayRevenue =
-                      dashboardStats.totalSalesRevenue * 0.85; // Mock data
-                    const todayRevenue = dashboardStats.totalSalesRevenue;
-
-                    if (yesterdayRevenue === 0) return "+0%";
-
-                    const percentChange =
-                      ((todayRevenue - yesterdayRevenue) / yesterdayRevenue) *
-                      100;
-                    const isPositive = percentChange >= 0;
-
-                    return `${isPositive ? "+" : ""}${percentChange.toFixed(1)}% ${isPositive ? "↑" : "↓"}`;
-                  })()}
-                </div>
-              </div>
-              <div className="text-xs text-gray-500">
-                {t("reports.comparedToYesterday")}
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Sub Revenue Cards */}
-        <Card className="border-0 shadow-md">
-          <CardContent className="p-4">
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.estimatedRevenue")}
-                </span>
-                <span className="font-semibold">
-                  {formatCurrency(dashboardStats.estimatedRevenue)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.paid")}
-                </span>
-                <span className="font-semibold">
-                  {formatCurrency(dashboardStats.totalSalesRevenue)}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {storeSettings?.businessType === "laundry"
-                    ? t("reports.unpaid")
-                    : t("reports.processing")}
-                </span>
-                <span className="font-semibold">
-                  {storeSettings?.businessType === "laundry"
-                    ? formatCurrency(dashboardStats.servingRevenue)
-                    : dashboardStats.processingOrdersCount}
-                </span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-600 text-sm">
-                  {t("reports.cancelled")}
-                </span>
-                <span className="font-semibold text-red-600">
-                  {formatCurrency(dashboardStats.cancelledRevenue)}
-                </span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* Tables and Orders Stats */}
-      {storeSettings?.businessType !== "laundry" && (
-        <div className="px-4">
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4">
-              <div className="text-center space-y-2">
-                <div className="text-sm text-gray-600">
-                  {t("reports.tablesInUse")}
-                </div>
-                <div className="text-2xl font-bold text-green-600">
-                  {getOccupiedTablesCount()}/{getTotalTablesCount()}
-                </div>
-                <div className="w-12 h-8 bg-gray-200 rounded mx-auto flex items-center justify-center">
-                  <div className="w-8 h-6 bg-gray-400 rounded"></div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
 
       {/* Orders Section */}
       <div className="px-4">
