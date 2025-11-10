@@ -307,13 +307,21 @@ export function DashboardOverview() {
       return stats;
     }
 
+    // Filter orders by selected stores - if no stores selected, use all orders
+    let filteredDateRangeOrders = dateRangeOrders;
+    if (selectedStores.length > 0) {
+      filteredDateRangeOrders = dateRangeOrders.filter((order: any) =>
+        selectedStores.includes(order.storeCode)
+      );
+    }
+
     // Filter completed orders from date range
-    const completedOrders = dateRangeOrders.filter(
+    const completedOrders = filteredDateRangeOrders.filter(
       (order) => order.status === "completed" || order.status === "paid",
     );
 
     // Filter unpaid orders from date range (only within selected date range)
-    const unpaidOrders = dateRangeOrders.filter(
+    const unpaidOrders = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "unpaid" ||
@@ -340,7 +348,7 @@ export function DashboardOverview() {
     );
 
     // Filter serving orders from date range only
-    const servingOrders = dateRangeOrders.filter(
+    const servingOrders = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "served" ||
         order.status === "preparing" ||
@@ -348,12 +356,12 @@ export function DashboardOverview() {
     );
 
     // Filter cancelled orders from date range
-    const cancelledOrders = dateRangeOrders.filter(
+    const cancelledOrders = filteredDateRangeOrders.filter(
       (order) => order.status === "cancelled",
     );
 
     // Count active orders from date range only
-    const activeOrdersCount = dateRangeOrders.filter(
+    const activeOrdersCount = filteredDateRangeOrders.filter(
       (order) =>
         order.status === "pending" ||
         order.status === "preparing" ||
@@ -444,7 +452,7 @@ export function DashboardOverview() {
     });
 
     // Get unique customers from date range orders
-    const totalCustomers = dateRangeOrders.reduce((total, order) => {
+    const totalCustomers = filteredDateRangeOrders.reduce((total, order) => {
       return total + (order.customerCount || 1);
     }, 0);
 
@@ -558,14 +566,14 @@ export function DashboardOverview() {
     stats.processingOrdersCount = servingOrders.length;
     stats.cancelledOrdersCount = cancelledOrders.length;
     stats.unpaidOrdersCount = unpaidOrders.length; // Set unpaid orders count
-    stats.totalOrdersInRange = dateRangeOrders.length;
+    stats.totalOrdersInRange = filteredDateRangeOrders.length;
     stats.paymentMethods = paymentMethods;
     stats.topProducts = topProducts;
 
     console.log("Dashboard Debug - Final Stats:", stats);
 
     return stats;
-  }, [ordersData, dateRangeOrders, orderItemsData, dateRange]);
+  }, [ordersData, dateRangeOrders, orderItemsData, dateRange, selectedStores]);
 
   const formatCurrency = (amount: number | string) => {
     // Ensure amount is treated as a number, default to 0 if parsing fails
