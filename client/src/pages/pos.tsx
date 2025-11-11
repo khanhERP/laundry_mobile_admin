@@ -45,7 +45,7 @@ export default function POS({ onLogout }: POSPageProps) {
     const connectWebSocket = () => {
       try {
         const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+        const wsUrl = `https://laundry-mobie-admin.onrender.com/ws`;
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
@@ -71,9 +71,9 @@ export default function POS({ onLogout }: POSPageProps) {
 
               // Clear cache and force refresh
               queryClient.clear();
-              queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"] });
-              queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"] });
-              queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"] });
+              queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"] });
+              queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"] });
+              queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"] });
 
               // Dispatch custom events for components
               window.dispatchEvent(new CustomEvent('forceDataRefresh', {
@@ -109,9 +109,9 @@ export default function POS({ onLogout }: POSPageProps) {
 
       // Force data refresh for any e-invoice related events
       queryClient.clear();
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"] });
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"] });
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"] });
+      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"] });
 
       // Dispatch refresh event for components
       window.dispatchEvent(new CustomEvent('forceDataRefresh', {
@@ -311,7 +311,7 @@ export default function POS({ onLogout }: POSPageProps) {
             // Send popup close signal via WebSocket to trigger other components to refresh
             try {
               const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-              const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+              const wsUrl = `https://laundry-mobie-admin.onrender.com/ws`;
               const ws = new WebSocket(wsUrl);
 
               ws.onopen = () => {

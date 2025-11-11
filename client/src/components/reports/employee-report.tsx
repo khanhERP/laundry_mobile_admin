@@ -59,28 +59,28 @@ export function EmployeeReport() {
   const [salesChannel, setSalesChannel] = useState("all");
 
   const { data: employees } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employees"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/employees"],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const { data: transactions } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transactions", startDate, endDate],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/transactions", startDate, endDate],
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 
   const { data: products } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   const { data: categories } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"],
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 
   // Employee sales data query
   const { data: employeeSalesData } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employee-sales", startDate, endDate, selectedEmployee],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/employee-sales", startDate, endDate, selectedEmployee],
     staleTime: 1 * 60 * 1000, // 1 minute
   });
 

@@ -63,10 +63,10 @@ export function OrderReport() {
 
   // Query orders by date range
   const { data: orders = [] } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range", startDate, endDate],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders/date-range", startDate, endDate],
     queryFn: async () => {
       try {
-        const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range/${startDate}/${endDate}`);
+        const response = await fetch(`https://laundry-mobie-admin.onrender.com/api/orders/date-range/${startDate}/${endDate}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -81,10 +81,10 @@ export function OrderReport() {
 
   // Query transactions by date range
   const { data: transactions = [] } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transactions", startDate, endDate],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/transactions", startDate, endDate],
     queryFn: async () => {
       try {
-        const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transactions/${startDate}/${endDate}`);
+        const response = await fetch(`https://laundry-mobie-admin.onrender.com/api/transactions/${startDate}/${endDate}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -98,15 +98,15 @@ export function OrderReport() {
   });
 
   const { data: products = [] } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"],
   });
 
   const { data: categories = [] } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"],
   });
 
   const { data: employees = [] } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employees"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/employees"],
   });
 
   const getFilteredData = () => {

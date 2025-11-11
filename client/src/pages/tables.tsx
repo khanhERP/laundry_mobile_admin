@@ -27,7 +27,7 @@ export default function TablesPage({ onLogout }: TablesPageProps) {
     const connectWebSocket = () => {
       try {
         const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+        const wsUrl = `https://laundry-mobie-admin.onrender.com/ws`;
         ws = new WebSocket(wsUrl);
 
         ws.onopen = () => {
@@ -60,8 +60,8 @@ export default function TablesPage({ onLogout }: TablesPageProps) {
 
               // Clear cache and force refresh
               queryClient.clear();
-              queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables"] });
-              queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"] });
+              queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/tables"] });
+              queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders"] });
 
               // Dispatch custom events for TableGrid component
               window.dispatchEvent(
@@ -108,8 +108,8 @@ export default function TablesPage({ onLogout }: TablesPageProps) {
 
       // Force data refresh for any e-invoice related events
       queryClient.clear();
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables"] });
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"] });
+      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/tables"] });
+      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders"] });
 
       // Dispatch refresh event for TableGrid
       window.dispatchEvent(

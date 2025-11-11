@@ -15,11 +15,11 @@ export function AttendanceStats() {
   );
 
   const { data: employees } = useQuery({
-    queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employees'],
+    queryKey: ['https://laundry-mobie-admin.onrender.com/api/employees'],
   });
 
   const { data: attendanceRecords } = useQuery({
-    queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/attendance'],
+    queryKey: ['https://laundry-mobie-admin.onrender.com/api/attendance'],
   });
 
   const getMonthlyStats = () => {

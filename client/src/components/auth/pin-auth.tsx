@@ -32,11 +32,11 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
     isLoading: isLoadingSettings,
     error: settingsError,
   } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"],
     queryFn: async () => {
       try {
         console.log("🔍 Fetching store settings from API...");
-        const response = await apiRequest("GET", "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings");
+        const response = await apiRequest("GET", "https://laundry-mobie-admin.onrender.com/api/store-settings");
 
         console.log("📡 Store settings response status:", response.status);
 
@@ -105,7 +105,7 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
       console.log("🔐 Verifying PIN via API...");
 
       // Call API to verify PIN
-      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/auth/verify-pin", {
+      const response = await fetch("https://laundry-mobie-admin.onrender.com/api/auth/verify-pin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -57,23 +57,23 @@ export function InventoryReport() {
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const { data: products } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"],
   });
 
   const { data: categories } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"],
   });
 
   const { data: orders } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders"],
   });
 
   const { data: employees } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employees"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/employees"],
   });
 
   const { data: suppliers } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/suppliers"],
+    queryKey: ["https://laundry-mobie-admin.onrender.com/api/suppliers"],
   });
 
   const formatCurrency = (amount: number) => {
@@ -1489,8 +1489,8 @@ export function InventoryReport() {
 const fetchInventoryData = async () => {
     try {
       const [productsResponse, categoriesResponse] = await Promise.all([
-        fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products'),
-        fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories')
+        fetch('https://laundry-mobie-admin.onrender.com/api/products'),
+        fetch('https://laundry-mobie-admin.onrender.com/api/categories')
       ]);
 
       if (!productsResponse.ok || !categoriesResponse.ok) {
