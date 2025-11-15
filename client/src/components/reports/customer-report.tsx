@@ -61,23 +61,23 @@ export function CustomerReport() {
   const [debtTo, setDebtTo] = useState("");
 
   const { data: orders } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"],
   });
 
   const { data: products } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/products"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"],
   });
 
   const { data: categories } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/categories"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/categories"],
   });
 
   const { data: customers } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/customers"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers"],
   });
 
   const { data: customerDebts } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/customer-debts"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customer-debts"],
     enabled: concernType === "debt",
   });
 

@@ -8,7 +8,7 @@ export function usePopupSignal() {
     // Connect WebSocket to same port as main application with /ws path
     const isSecure = window.location.protocol === 'https:';
     const wsProtocol = isSecure ? 'wss:' : 'ws:';
-    const wsUrl = `https://laundry-mobie-admin.onrender.com/ws`;
+    const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
 
     console.log('Connecting to WebSocket:', wsUrl);
 
@@ -63,7 +63,7 @@ export function usePopupSignal() {
   }, []);
 
   const sendPopupClose = (success: boolean) => {
-    fetch('https://laundry-mobie-admin.onrender.com/api/popup/close', {
+    fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/popup/close', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

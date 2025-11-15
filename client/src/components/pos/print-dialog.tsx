@@ -220,7 +220,7 @@ export function PrintDialog({
         console.log('🖨️ Print Dialog: Updating order status to paid before printing for order:', receiptData.orderId);
 
         try {
-          const statusResponse = await fetch(`https://laundry-mobie-admin.onrender.com/api/orders/${receiptData.orderId}/status`, {
+          const statusResponse = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/${receiptData.orderId}/status`, {
             method: 'PUT',
             headers: {
               'Content-Type': 'application/json',
@@ -264,7 +264,7 @@ export function PrintDialog({
       // Always try POS API first for any device
       try {
         console.log('🖨️ Attempting POS printer API...');
-        const printApiResponse = await fetch('https://laundry-mobie-admin.onrender.com/api/pos/print-receipt', {
+        const printApiResponse = await fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/pos/print-receipt', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -793,7 +793,7 @@ export function PrintDialog({
 
                 // Send message to parent to stop any popup flows
                 try {
-                  fetch('https://laundry-mobie-admin.onrender.com/api/popup/close', {
+                  fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/popup/close', {
                     method: 'POST',
                     headers: {
                       'Content-Type': 'application/json',

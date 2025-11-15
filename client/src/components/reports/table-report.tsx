@@ -47,10 +47,10 @@ export function TableReport() {
 
   // Fetch data using EXACT same pattern as other reports
   const { data: orders = [], isLoading: ordersLoading } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"],
     queryFn: async () => {
       try {
-        const response = await fetch("https://laundry-mobie-admin.onrender.com/api/orders");
+        const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -67,10 +67,10 @@ export function TableReport() {
   });
 
   const { data: invoices = [], isLoading: invoicesLoading } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/invoices"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/invoices"],
     queryFn: async () => {
       try {
-        const response = await fetch("https://laundry-mobie-admin.onrender.com/api/invoices");
+        const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/invoices");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -87,10 +87,10 @@ export function TableReport() {
   });
 
   const { data: transactions = [], isLoading: transactionsLoading } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/transactions"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transactions"],
     queryFn: async () => {
       try {
-        const response = await fetch("https://laundry-mobie-admin.onrender.com/api/transactions");
+        const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transactions");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -107,10 +107,10 @@ export function TableReport() {
   });
 
   const { data: tables = [], isLoading: tablesLoading } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/tables"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables"],
     queryFn: async () => {
       try {
-        const response = await fetch("https://laundry-mobie-admin.onrender.com/api/tables");
+        const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -128,10 +128,10 @@ export function TableReport() {
 
   // Fetch order items and transaction items for detailed analysis
   const { data: orderItems = [], isLoading: orderItemsLoading } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/order-items"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/order-items"],
     queryFn: async () => {
       try {
-        const response = await fetch("https://laundry-mobie-admin.onrender.com/api/order-items");
+        const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/order-items");
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -149,10 +149,10 @@ export function TableReport() {
 
   const { data: transactionItems = [], isLoading: transactionItemsLoading } =
     useQuery({
-      queryKey: ["https://laundry-mobie-admin.onrender.com/api/transaction-items"],
+      queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transaction-items"],
       queryFn: async () => {
         try {
-          const response = await fetch("https://laundry-mobie-admin.onrender.com/api/transaction-items");
+          const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/transaction-items");
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }

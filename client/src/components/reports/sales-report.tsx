@@ -54,11 +54,11 @@ export function SalesReport() {
     error: ordersError,
     refetch: refetchOrders,
   } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders/date-range", startDate, endDate],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range", startDate, endDate],
     queryFn: async () => {
       try {
         const response = await fetch(
-          `https://laundry-mobie-admin.onrender.com/api/orders/date-range/${startDate}/${endDate}`,
+          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range/${startDate}/${endDate}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -80,11 +80,11 @@ export function SalesReport() {
     isLoading: orderItemsLoading,
     refetch: refetchOrderItems,
   } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/order-items/date-range", startDate, endDate],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/order-items/date-range", startDate, endDate],
     queryFn: async () => {
       try {
         const response = await fetch(
-          `https://laundry-mobie-admin.onrender.com/api/order-items/${startDate}/${endDate}`,
+          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/order-items/${startDate}/${endDate}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

@@ -39,9 +39,9 @@ export function RightSidebar() {
 
   // Query store settings to get business type
   const { data: storeSettings } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "https://laundry-mobie-admin.onrender.com/api/store-settings");
+      const response = await apiRequest("GET", "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings");
       return response.json();
     },
   });

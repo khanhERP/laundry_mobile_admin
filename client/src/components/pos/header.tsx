@@ -64,20 +64,20 @@ export function POSHeader({ onLogout }: POSHeaderProps) {
 
   // Fetch store settings
   const { data: storeSettings } = useQuery<StoreSettings>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
   });
 
   // Fetch employees
   const { data: employees } = useQuery<Employee[]>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/employees"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/employees"],
   });
 
   // Fetch today's attendance records
   const todayDate = new Date().toISOString().split("T")[0];
   const { data: todayAttendance } = useQuery<AttendanceRecord[]>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/attendance", todayDate],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/attendance", todayDate],
     queryFn: async () => {
-      const response = await fetch(`https://laundry-mobie-admin.onrender.com/api/attendance?date=${todayDate}`);
+      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/attendance?date=${todayDate}`);
       if (!response.ok) {
         throw new Error("Failed to fetch attendance records");
       }

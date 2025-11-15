@@ -123,9 +123,9 @@ export function DashboardOverview() {
 
   // Fetch store settings
   const { data: storeSettings } = useQuery<StoreSettings>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/store-settings"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
     queryFn: async () => {
-      const response = await fetch("https://laundry-mobie-admin.onrender.com/api/store-settings");
+      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings");
       if (!response.ok) {
         throw new Error("Failed to fetch store settings");
       }
@@ -137,7 +137,7 @@ export function DashboardOverview() {
   const { data: ordersData, isLoading: ordersLoading } = useQuery({
     queryKey: ["orders"],
     queryFn: async () => {
-      const response = await fetch("https://laundry-mobie-admin.onrender.com/api/orders");
+      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders");
       if (!response.ok) {
         throw new Error("Failed to fetch orders");
       }
@@ -149,7 +149,7 @@ export function DashboardOverview() {
   const { data: orderItemsData, isLoading: orderItemsLoading } = useQuery({
     queryKey: ["order-items"],
     queryFn: async () => {
-      const response = await fetch("https://laundry-mobie-admin.onrender.com/api/order-items");
+      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/order-items");
       if (!response.ok) {
         throw new Error("Failed to fetch order items");
       }
@@ -159,17 +159,17 @@ export function DashboardOverview() {
 
   // Fetch orders in date range
   const { data: dateRangeOrders } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/orders/date-range", dateRange.start, dateRange.end],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range", dateRange.start, dateRange.end],
     queryFn: async () => {
       try {
         console.log(`Dashboard - Date Range Query:`, {
           startDate: dateRange.start,
           endDate: dateRange.end,
-          apiUrl: `https://laundry-mobie-admin.onrender.com/api/orders/date-range/${dateRange.start}/${dateRange.end}`,
+          apiUrl: `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range/${dateRange.start}/${dateRange.end}`,
         });
 
         const response = await fetch(
-          `https://laundry-mobie-admin.onrender.com/api/orders/date-range/${dateRange.start}/${dateRange.end}`,
+          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/date-range/${dateRange.start}/${dateRange.end}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -203,7 +203,7 @@ export function DashboardOverview() {
   const { data: tablesData } = useQuery({
     queryKey: ["tables"],
     queryFn: async () => {
-      const response = await fetch("https://laundry-mobie-admin.onrender.com/api/tables");
+      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables");
       if (!response.ok) {
         throw new Error("Failed to fetch tables");
       }
@@ -213,11 +213,11 @@ export function DashboardOverview() {
 
   // Fetch revenue by store
   const { data: storeRevenueData } = useQuery({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/reports/revenue-by-store", dateRange.start, dateRange.end],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/reports/revenue-by-store", dateRange.start, dateRange.end],
     queryFn: async () => {
       try {
         const response = await fetch(
-          `https://laundry-mobie-admin.onrender.com/api/reports/revenue-by-store?startDate=${dateRange.start}&endDate=${dateRange.end}`,
+          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/reports/revenue-by-store?startDate=${dateRange.start}&endDate=${dateRange.end}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

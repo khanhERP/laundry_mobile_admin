@@ -39,7 +39,7 @@ export default function PurchasesPage({ onLogout }: PurchasesPageProps) {
 
   // Fetch purchase receipts with filters
   const { data: purchaseOrders = [], isLoading: isOrdersLoading } = useQuery<PurchaseOrder[]>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/purchase-receipts", { startDate, endDate, productFilter, searchTerm }],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/purchase-receipts", { startDate, endDate, productFilter, searchTerm }],
     queryFn: async () => {
       const params = new URLSearchParams();
       
@@ -56,7 +56,7 @@ export default function PurchasesPage({ onLogout }: PurchasesPageProps) {
         params.append('search', productFilter);
       }
       
-      const url = `https://laundry-mobie-admin.onrender.com/api/purchase-receipts${params.toString() ? `?${params.toString()}` : ''}`;
+      const url = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/purchase-receipts${params.toString() ? `?${params.toString()}` : ''}`;
       console.log('🔍 Fetching purchase receipts with filters:', url);
       
       const response = await fetch(url);
@@ -76,7 +76,7 @@ export default function PurchasesPage({ onLogout }: PurchasesPageProps) {
 
   // Fetch suppliers for filtering
   const { data: suppliers = [] } = useQuery<Supplier[]>({
-    queryKey: ["https://laundry-mobie-admin.onrender.com/api/suppliers"],
+    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/suppliers"],
   });
 
   // Calculate dashboard statistics
@@ -172,7 +172,7 @@ export default function PurchasesPage({ onLogout }: PurchasesPageProps) {
   // Bulk delete mutation
   const bulkDeleteMutation = useMutation({
     mutationFn: async (orderIds: number[]) => {
-      return apiRequest("POST", "https://laundry-mobie-admin.onrender.com/api/purchase-receipts/bulk-delete", {
+      return apiRequest("POST", "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/purchase-receipts/bulk-delete", {
         orderIds
       });
     },
@@ -189,7 +189,7 @@ export default function PurchasesPage({ onLogout }: PurchasesPageProps) {
       setSelectedOrders(new Set());
       
       // Refetch purchase receipts
-      queryClient.invalidateQueries({ queryKey: ["https://laundry-mobie-admin.onrender.com/api/purchase-receipts"] });
+      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/purchase-receipts"] });
       
       // Close dialog
       setShowDeleteDialog(false);
