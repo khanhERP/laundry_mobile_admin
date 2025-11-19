@@ -99,6 +99,16 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
       return;
     }
 
+    // Kiểm tra độ dài PIN tối thiểu
+    if (pin.length < 4) {
+      toast({
+        title: "Lỗi",
+        description: "Mã PIN phải có ít nhất 4 chữ số",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -115,13 +125,8 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
 
       const data = await response.json();
 
-      if (response.ok && data.success) {
-        // Lưu trạng thái đăng nhập vào sessionStorage
-        sessionStorage.setItem("pinAuthenticated", "true");
-
-        console.log("🎉 PIN verification successful");
-        onAuthSuccess();
-      } else {
+      // Chỉ cho phép đăng nhập nếu response.ok và data.success === true
+      if (!response.ok || !data.success) {
         toast({
           title: "Mã PIN không đúng",
           description: data.message || "Vui lòng kiểm tra lại mã PIN",
@@ -129,7 +134,14 @@ export function PinAuth({ onAuthSuccess }: PinAuthProps) {
         });
         setPin("");
         console.log("❌ PIN verification failed");
+        return;
       }
+
+      // Lưu trạng thái đăng nhập vào sessionStorage
+      sessionStorage.setItem("pinAuthenticated", "true");
+
+      console.log("🎉 PIN verification successful");
+      onAuthSuccess();
     } catch (error) {
       console.error("❌ PIN verification error:", error);
       toast({
