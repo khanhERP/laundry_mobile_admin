@@ -44,13 +44,13 @@ export function MembershipModal({ isOpen, onClose }: MembershipModalProps) {
 
   // Fetch customers
   const { data: customers, isLoading } = useQuery<Customer[]>({
-    queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers'],
+    queryKey: ['https://api-laundry-mobile.edpos.vn/api/customers'],
     enabled: isOpen,
   });
 
   // Fetch membership thresholds
   const { data: fetchedThresholds } = useQuery<{ GOLD: number; VIP: number }>({
-    queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/membership-thresholds'],
+    queryKey: ['https://api-laundry-mobile.edpos.vn/api/membership-thresholds'],
     enabled: isOpen,
   });
 
@@ -94,7 +94,7 @@ export function MembershipModal({ isOpen, onClose }: MembershipModalProps) {
   // Update customer membership
   const updateMembershipMutation = useMutation({
     mutationFn: async ({ customerId, membershipLevel }: { customerId: number; membershipLevel: string }) => {
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers/${customerId}`, {
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/customers/${customerId}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,7 @@ export function MembershipModal({ isOpen, onClose }: MembershipModalProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers'] });
+      queryClient.invalidateQueries({ queryKey: ['https://api-laundry-mobile.edpos.vn/api/customers'] });
       toast({
         title: t("common.success"),
         description: t("customers.customerUpdated"),
@@ -122,7 +122,7 @@ export function MembershipModal({ isOpen, onClose }: MembershipModalProps) {
   // Update membership thresholds
   const updateThresholdsMutation = useMutation({
     mutationFn: async (newThresholds: { GOLD: number; VIP: number }) => {
-      const response = await fetch('https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/membership-thresholds', {
+      const response = await fetch('https://api-laundry-mobile.edpos.vn/api/membership-thresholds', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -132,8 +132,8 @@ export function MembershipModal({ isOpen, onClose }: MembershipModalProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/membership-thresholds'] });
-      queryClient.invalidateQueries({ queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers'] });
+      queryClient.invalidateQueries({ queryKey: ['https://api-laundry-mobile.edpos.vn/api/membership-thresholds'] });
+      queryClient.invalidateQueries({ queryKey: ['https://api-laundry-mobile.edpos.vn/api/customers'] });
       toast({
         title: t("common.success"),
         description: "Đã cập nhật mức chi tiêu nâng hạng",

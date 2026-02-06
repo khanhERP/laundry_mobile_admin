@@ -71,7 +71,7 @@ export function usePOS() {
         notes: null,
       }));
 
-      const response = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders", {
+      const response = await fetch("https://api-laundry-mobile.edpos.vn/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ order: orderData, items }),
@@ -109,8 +109,8 @@ export function usePOS() {
 
       setLastReceipt(receipt);
       updateActiveOrderCart([]);
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products"] });
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders"] });
+      queryClient.invalidateQueries({ queryKey: ["https://api-laundry-mobile.edpos.vn/api/products"] });
+      queryClient.invalidateQueries({ queryKey: ["https://api-laundry-mobile.edpos.vn/api/orders"] });
 
       // Dispatch events for real-time updates
       if (typeof window !== 'undefined') {
@@ -187,7 +187,7 @@ export function usePOS() {
 
     try {
       // Fetch product details
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/products/${productId}`);
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/products/${productId}`);
       if (!response.ok) {
         throw new Error('Failed to fetch product');
       }

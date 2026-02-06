@@ -89,7 +89,7 @@ export function CustomerPointsModal({
   const { data: pointsData, isLoading: pointsLoading } = useQuery({
     queryKey: ['customer-points', customerId],
     queryFn: async () => {
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers/${customerId}/points`);
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/customers/${customerId}/points`);
       if (!response.ok) throw new Error('Failed to fetch customer points');
       return response.json();
     },
@@ -100,7 +100,7 @@ export function CustomerPointsModal({
   const { data: pointHistory, isLoading: historyLoading } = useQuery({
     queryKey: ['customer-point-history', customerId],
     queryFn: async () => {
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers/${customerId}/point-history`);
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/customers/${customerId}/point-history`);
       if (!response.ok) throw new Error('Failed to fetch point history');
       return response.json();
     },
@@ -110,7 +110,7 @@ export function CustomerPointsModal({
   // Update points mutation
   const updatePointsMutation = useMutation({
     mutationFn: async (data: PointUpdateForm) => {
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers/${customerId}/points`, {
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/customers/${customerId}/points`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -131,7 +131,7 @@ export function CustomerPointsModal({
         queryKey: ['customer-point-history', customerId],
       });
       queryClient.invalidateQueries({
-        queryKey: ['https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/customers'],
+        queryKey: ['https://api-laundry-mobile.edpos.vn/api/customers'],
       });
       toast({
         title: t("common.success"),

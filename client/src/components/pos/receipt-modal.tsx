@@ -54,9 +54,9 @@ export function ReceiptModal({
   }, [isTitle]);
   // Query store settings
   const { data: storeSettings } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
+    queryKey: ["https://api-laundry-mobile.edpos.vn/api/store-settings"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings");
+      const response = await apiRequest("GET", "https://api-laundry-mobile.edpos.vn/api/store-settings");
       return response.json();
     },
     enabled: isOpen, // Only fetch when modal is open
@@ -181,7 +181,7 @@ export function ReceiptModal({
       let activePrinterConfigs = [];
       try {
         console.log("🖨️ Fetching active printer configurations...");
-        const printerResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/printer-configs");
+        const printerResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/printer-configs");
         if (printerResponse.ok) {
           const allConfigs = await printerResponse.json();
           activePrinterConfigs = allConfigs.filter(
@@ -219,7 +219,7 @@ export function ReceiptModal({
         console.log("🖨️ Trying configured POS printers for all platforms...");
 
         try {
-          const printResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/pos/print-receipt", {
+          const printResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/pos/print-receipt", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -823,7 +823,7 @@ export function ReceiptModal({
     // Send refresh signal without notification
     try {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+      const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {

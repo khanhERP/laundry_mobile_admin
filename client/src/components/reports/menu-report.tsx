@@ -113,7 +113,7 @@ export function MenuReport({
     refetch,
   } = useQuery({
     queryKey: [
-      "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/menu-analysis",
+      "https://api-laundry-mobile.edpos.vn/api/menu-analysis",
       dateRange.start,
       dateRange.end,
       selectedCategory,
@@ -128,7 +128,7 @@ export function MenuReport({
 
         const response = await apiRequest(
           "GET",
-          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/menu-analysis?${params.toString()}`,
+          `https://api-laundry-mobile.edpos.vn/api/menu-analysis?${params.toString()}`,
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch menu analysis: ${response.status}`);
@@ -178,7 +178,7 @@ export function MenuReport({
   };
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/menu-analysis"] });
+    queryClient.invalidateQueries({ queryKey: ["https://api-laundry-mobile.edpos.vn/api/menu-analysis"] });
     refetch();
   };
 

@@ -91,9 +91,9 @@ export function PaymentMethodModal({
 
   // Query store settings to get dynamic address - ALWAYS CALL THIS HOOK
   const { data: storeSettings } = useQuery({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
+    queryKey: ["https://api-laundry-mobile.edpos.vn/api/store-settings"],
     queryFn: async () => {
-      const response = await apiRequest("GET", "https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings");
+      const response = await apiRequest("GET", "https://api-laundry-mobile.edpos.vn/api/store-settings");
       return response.json();
     },
     enabled: isOpen, // Only fetch when modal is open
@@ -464,7 +464,7 @@ export function PaymentMethodModal({
             try {
               const protocol =
                 window.location.protocol === "https:" ? "wss:" : "ws:";
-              const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+              const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
               console.log(
                 "🎯 QR Payment: Connecting to WebSocket for customer display:",
                 wsUrl,
@@ -599,7 +599,7 @@ export function PaymentMethodModal({
             try {
               const protocol =
                 window.location.protocol === "https:" ? "wss:" : "ws:";
-              const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+              const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
               console.log(
                 "Fallback QR Payment: Attempting to connect to WebSocket:",
                 wsUrl,
@@ -770,7 +770,7 @@ export function PaymentMethodModal({
         try {
           const protocol =
             window.location.protocol === "https:" ? "wss:" : "ws:";
-          const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+          const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
           const ws = new WebSocket(wsUrl);
 
           ws.onopen = () => {
@@ -937,7 +937,7 @@ export function PaymentMethodModal({
         console.log(`📦 Order items:`, orderItems);
 
         // Create order via API
-        const createResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders", {
+        const createResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/orders", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -981,7 +981,7 @@ export function PaymentMethodModal({
 
         try {
           // First update the payment method and status
-          const updateResponse = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/${orderInfo.id}`, {
+          const updateResponse = await fetch(`https://api-laundry-mobile.edpos.vn/api/orders/${orderInfo.id}`, {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
@@ -1016,7 +1016,7 @@ export function PaymentMethodModal({
                 );
 
                 // Check if there are any other unpaid orders on this table
-                const ordersResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders");
+                const ordersResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/orders");
                 const allOrders = await ordersResponse.json();
 
                 const otherActiveOrders = Array.isArray(allOrders)
@@ -1047,7 +1047,7 @@ export function PaymentMethodModal({
                   );
 
                   const tableUpdateResponse = await fetch(
-                    `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/tables/${updatedOrder.tableId}/status`,
+                    `https://api-laundry-mobile.edpos.vn/api/tables/${updatedOrder.tableId}/status`,
                     {
                       method: "PUT",
                       headers: {
@@ -1240,7 +1240,7 @@ export function PaymentMethodModal({
       console.log("📦 Order items:", orderItems);
 
       // Create order via API
-      const createResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders", {
+      const createResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1283,7 +1283,7 @@ export function PaymentMethodModal({
         );
 
         const statusResponse = await fetch(
-          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/${orderInfo.id}/status`,
+          `https://api-laundry-mobile.edpos.vn/api/orders/${orderInfo.id}/status`,
           {
             method: "PUT",
             headers: {
@@ -1337,7 +1337,7 @@ export function PaymentMethodModal({
     // Send message to customer display to clear QR payment
     try {
       const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
-      const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+      const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
       const ws = new WebSocket(wsUrl);
 
       ws.onopen = () => {
@@ -1526,7 +1526,7 @@ export function PaymentMethodModal({
       console.log("📦 Order items:", orderItems);
 
       // Create order via API
-      const createResponse = await fetch("https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders", {
+      const createResponse = await fetch("https://api-laundry-mobile.edpos.vn/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -1571,7 +1571,7 @@ export function PaymentMethodModal({
         );
 
         const statusResponse = await fetch(
-          `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/orders/${orderInfo.id}/status`,
+          `https://api-laundry-mobile.edpos.vn/api/orders/${orderInfo.id}/status`,
           {
             method: "PUT",
             headers: {
@@ -1813,7 +1813,7 @@ export function PaymentMethodModal({
         try {
           const protocol =
             window.location.protocol === "https:" ? "wss:" : "ws:";
-          const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+          const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
           const ws = new WebSocket(wsUrl);
 
           ws.onopen = () => {
@@ -1915,7 +1915,7 @@ export function PaymentMethodModal({
             try {
               const protocol =
                 window.location.protocol === "https:" ? "wss:" : "ws:";
-              const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+              const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
               const ws = new WebSocket(wsUrl);
 
               ws.onopen = () => {
@@ -2045,7 +2045,7 @@ export function PaymentMethodModal({
                     try {
                       const protocol =
                         window.location.protocol === "https:" ? "wss:" : "ws:";
-                      const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+                      const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
                       const ws = new WebSocket(wsUrl);
 
                       ws.onopen = () => {
@@ -2132,7 +2132,7 @@ export function PaymentMethodModal({
                           window.location.protocol === "https:"
                             ? "wss:"
                             : "ws:";
-                        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+                        const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
                         const ws = new WebSocket(wsUrl);
 
                         ws.onopen = () => {
@@ -2178,7 +2178,7 @@ export function PaymentMethodModal({
                           window.location.protocol === "https:"
                             ? "wss:"
                             : "ws:";
-                        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+                        const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
                         const ws = new WebSocket(wsUrl);
 
                         ws.onopen = () => {
@@ -2364,7 +2364,7 @@ export function PaymentMethodModal({
                           window.location.protocol === "https:"
                             ? "wss:"
                             : "ws:";
-                        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+                        const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
                         const ws = new WebSocket(wsUrl);
 
                         ws.onopen = () => {
@@ -2401,7 +2401,7 @@ export function PaymentMethodModal({
                           window.location.protocol === "https:"
                             ? "wss:"
                             : "ws:";
-                        const wsUrl = `https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/ws`;
+                        const wsUrl = `https://api-laundry-mobile.edpos.vn/ws`;
                         const ws = new WebSocket(wsUrl);
 
                         ws.onopen = () => {

@@ -40,7 +40,7 @@ export function OtherMenu({ onBack, onLogout }: OtherMenuProps) {
 
   // Fetch store settings
   const { data: storeSettings } = useQuery<StoreSettings>({
-    queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"],
+    queryKey: ["https://api-laundry-mobile.edpos.vn/api/store-settings"],
   });
 
   // storeSettings is a single object, not an array
@@ -89,7 +89,7 @@ export function OtherMenu({ onBack, onLogout }: OtherMenuProps) {
   const updatePasswordMutation = useMutation({
     mutationFn: async (newPinCode: string) => {
       if (!storeSettings?.id) throw new Error("Store settings not found");
-      const response = await fetch(`https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings/${storeSettings.id}`, {
+      const response = await fetch(`https://api-laundry-mobile.edpos.vn/api/store-settings/${storeSettings.id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ pinCode: newPinCode }),
@@ -98,7 +98,7 @@ export function OtherMenu({ onBack, onLogout }: OtherMenuProps) {
       return response.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["https://25da17e5-7ac2-4890-934e-e5dd4883f884-00-1yx4zdislv1l0.pike.replit.dev/api/store-settings"] });
+      queryClient.invalidateQueries({ queryKey: ["https://api-laundry-mobile.edpos.vn/api/store-settings"] });
       setShowPasswordModal(false);
       setCurrentPassword("");
       setNewPassword("");
